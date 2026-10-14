@@ -1,0 +1,22 @@
+import { Logo } from "../components/Logo";
+import { actions } from "../lib/store";
+import { useT } from "../lib/useT";
+
+export function Welcome() {
+  const { t, lang } = useT();
+  return (
+    <main className="welcome">
+      <div className="welcome-inner">
+        <Logo size={44} />
+        <p className="welcome-tagline">{t("tagline")}</p>
+        <p className="lead">{t("welcomeLead")}</p>
+        <div className="seg" role="group" aria-label={t("chooseLang")}>
+          <button type="button" lang="bn" aria-pressed={lang === "bn"} onClick={() => actions.setLang("bn")}>বাংলা</button>
+          <button type="button" lang="en" aria-pressed={lang === "en"} onClick={() => actions.setLang("en")}>English</button>
+        </div>
+        <button type="button" className="btn btn--primary btn--block" onClick={actions.start}>{t("startDemo")}</button>
+        <p className="small muted">{t("demoNote")}</p>
+      </div>
+    </main>
+  );
+}

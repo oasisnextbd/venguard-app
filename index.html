@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VenGuard</title>
+<meta name="description" content="VenGuard: see your kitchen gas safety from anywhere.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/noto-sans-bengali-bengali.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+  /* Apply the saved theme before first paint. */
+  (function () { var p = "auto"; try { p = (JSON.parse(localStorage.getItem("vg_app_v1") || "{}").theme) || "auto"; } catch (e) {}
+    var dark = p === "dark" || (p === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = dark ? "dark" : "light"; })();
+</script>
+</head>
+<body>
+<div id="root"></div>
+<noscript>VenGuard needs JavaScript.</noscript>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
