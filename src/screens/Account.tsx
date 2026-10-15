@@ -8,7 +8,7 @@ const WHATSAPP = "8801302829487"; // company WhatsApp (same as the website's sit
 const WEBSITE = "https://oasisnextbd.github.io/OASIS_official_website/VENGuard/";
 
 export function Account() {
-  const { lang, theme, sound } = useApp();
+  const { lang, theme, sound, mode, auth } = useApp();
   const { t, n } = useT();
   const [perm, setPerm] = useState<Permission>("unsupported");
   useEffect(() => { void notificationPermission().then(setPerm); }, []);
@@ -22,7 +22,7 @@ export function Account() {
       <section className="panel plan">
         <div className="row">
           <span><span className="eyebrow">{t("plan")}</span><strong className="plan-price">{t("planPrice")}</strong></span>
-          <span className="pill pill--safe"><Icon name="check" size={16} />{t("planDemo")}</span>
+          <span className="pill pill--safe"><Icon name="check" size={16} />{mode === "live" ? t("pilot") : t("planDemo")}</span>
         </div>
         <p className="small muted">{t("planNote")}</p>
       </section>
@@ -55,13 +55,27 @@ export function Account() {
         )}
       </section>
 
+      {mode === "live" && auth && (
+        <section className="panel list">
+          <p className="list-link"><Icon name="user" />{t("signedInAs", { phone: n(auth.phone.replace(/^\+88/, "")) })}</p>
+          <button type="button" className="list-link" onClick={actions.signOut}><Icon name="back" />{t("signOut")}<Icon name="chevron" size={18} /></button>
+        </section>
+      )}
+
       <section className="panel list">
         <a className="list-link" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener"><Icon name="whatsapp" />{t("help")}<Icon name="chevron" size={18} /></a>
         <a className="list-link" href={WEBSITE} target="_blank" rel="noopener"><Icon name="globe" />{t("website")}<Icon name="chevron" size={18} /></a>
-        <button type="button" className="list-link" onClick={actions.restartDemo}><Icon name="restart" />{t("resetDemo")}<Icon name="chevron" size={18} /></button>
+        {mode === "demo" ? (
+          <>
+            <button type="button" className="list-link" onClick={actions.restartDemo}><Icon name="restart" />{t("resetDemo")}<Icon name="chevron" size={18} /></button>
+            <button type="button" className="list-link" onClick={actions.startLive}><Icon name="user" />{t("signInReal")}<Icon name="chevron" size={18} /></button>
+          </>
+        ) : (
+          <button type="button" className="list-link" onClick={actions.switchToDemo}><Icon name="play" />{t("switchDemo")}<Icon name="chevron" size={18} /></button>
+        )}
       </section>
 
-      <p className="small muted center">{t("demoNote")}<br />{t("version")} {n(__APP_VERSION__)}</p>
+      <p className="small muted center">{mode === "demo" && <>{t("demoNote")}<br /></>}{t("version")} {n(__APP_VERSION__)}</p>
     </main>
   );
 }

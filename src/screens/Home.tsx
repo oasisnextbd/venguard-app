@@ -9,7 +9,7 @@ import { timeOfDay } from "../lib/i18n";
 import { useT } from "../lib/useT";
 
 export function Home() {
-  const { sites, devices } = useApp();
+  const { sites, devices, mode } = useApp();
   const { t, n, lang } = useT();
   const all = Object.values(devices);
   const statuses = all.map(statusOf);
@@ -18,7 +18,23 @@ export function Home() {
   const urgent = all.find((d) => statusOf(d) === overall);
   const urgentSite = urgent && sites.find((s) => s.id === urgent.siteId);
   const demo = devices[DEMO_DEVICE];
-  const demoBusy = demo.leaking || demo.alarm || demo.valve === "closed";
+  const demoBusy = !demo || demo.leaking || demo.alarm || demo.valve === "closed";
+  const homes = sites.filter((s) => s.kind === "home");
+  const buildings = sites.filter((s) => s.kind === "building");
+
+  if (mode === "live" && all.length === 0) {
+    return (
+      <main className="page">
+        <p className="greet">{timeOfDay(lang)}</p>
+        <section className="panel empty-card">
+          <span className="hero-icon"><Icon name="shield" size={28} /></span>
+          <h1>{t("noDevicesTitle")}</h1>
+          <p className="muted">{t("noDevicesLead")}</p>
+          <a className="btn btn--primary" href="#/add"><Icon name="plus" size={18} />{t("addDeviceTitle")}</a>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="page">
@@ -35,7 +51,7 @@ export function Home() {
         </div>
       </section>
 
-      {!demoBusy && (
+      {mode === "demo" && !demoBusy && (
         <button type="button" className="demo-cta" onClick={() => actions.leak()}>
           <Icon name="play" size={20} />
           <span><strong>{t("tryLeak")}</strong><span className="small">{t("tryLeakSub")}</span></span>
@@ -44,15 +60,15 @@ export function Home() {
 
       <h2 className="section-title">{t("kitchens")}</h2>
       <div className="cards">
-        {sites.filter((s) => s.kind === "home").map((s) => {
+        {homes.map((s) => {
           const d = all.find((x) => x.siteId === s.id)!;
           return <KitchenCard key={s.id} device={d} title={s.name[lang]} sub={s.area[lang]} />;
         })}
       </div>
 
-      <h2 className="section-title">{t("buildings")}</h2>
+      {buildings.length > 0 && <h2 className="section-title">{t("buildings")}</h2>}
       <div className="cards">
-        {sites.filter((s) => s.kind === "building").map((s) => {
+        {buildings.map((s) => {
           const units = all.filter((x) => x.siteId === s.id);
           const st = units.map(statusOf);
           const counts = st.reduce<Partial<Record<Status, number>>>((a, x) => ({ ...a, [x]: (a[x] || 0) + 1 }), {});
@@ -71,6 +87,7 @@ export function Home() {
           );
         })}
       </div>
+      {mode === "live" && <a className="arrow-link" href="#/add"><Icon name="plus" size={18} />{t("addAnother")}</a>}
     </main>
   );
 }
@@ -101,7 +118,7 @@ export function KitchenCard({ device: d, title, sub }: { device: Device; title: 
         </div>
         <div className="reading">
           <span className="reading-label">{t("battery")}</span>
-          <span className="reading-value">{n(d.battery)}%</span>
+          <span className="reading-value">{d.battery === null ? "—" : `${n(d.battery)}%`}</span>
         </div>
       </div>
     </a>

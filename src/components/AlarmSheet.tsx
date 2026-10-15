@@ -6,7 +6,7 @@ import { useT } from "../lib/useT";
 
 /** Full-screen leak alarm. Opens when a leak is confirmed anywhere. */
 export function AlarmSheet() {
-  const { alarmFor, devices, sites, family } = useApp();
+  const { alarmFor, devices, sites, family, mode } = useApp();
   const { t, lang } = useT();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => { if (alarmFor) ref.current?.focus(); }, [alarmFor]);
@@ -24,7 +24,7 @@ export function AlarmSheet() {
         <ul className="alarm-facts">
           <li><Icon name={hasValve ? "check" : "alert"} size={20} />{hasValve ? t("alarmValve") : t("alarmNoValve")}</li>
           <li><Icon name="check" size={20} />{t("alarmFan")}</li>
-          <li><Icon name={family.length ? "check" : "users"} size={20} />{family.length ? t("alarmSms", { n: family.length }) : t("alarmNoFamily")}</li>
+          {mode === "demo" && <li><Icon name={family.length ? "check" : "users"} size={20} />{family.length ? t("alarmSms", { n: family.length }) : t("alarmNoFamily")}</li>}
         </ul>
         <p className="alarm-do">{t("alarmDo")}</p>
         <div className="alarm-actions">

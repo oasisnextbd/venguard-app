@@ -1,8 +1,9 @@
 /**
  * App state: one small store, read by components through useApp().
- * Settings and family contacts persist on the phone (localStorage).
- * Device data comes from the demo simulator; a later update swaps the
- * `tick` source for live data from the VenGuard backend.
+ * Settings persist on the phone (localStorage).
+ * Two sources of device data:
+ *   demo — the simulator (sim.ts), ticked here once a second;
+ *   live — the VenGuard Firebase backend (live.ts), which pushes updates through setLive().
  */
 import { useSyncExternalStore } from "react";
 import { DEMO_DEVICE, SITES, seedDevices } from "./demo";
@@ -26,8 +27,15 @@ export interface Contact {
   phone: string;
 }
 
+export type Mode = "demo" | "live";
+export type CloseStatus = "sent" | "closed" | "already_closed" | "failed";
+
 export interface State {
   started: boolean;
+  mode: Mode;
+  /** live mode: undefined = still checking, null = signed out */
+  auth: { uid: string; phone: string } | null | undefined;
+  closeReq: Record<string, CloseStatus>;
   lang: Lang;
   theme: ThemePref;
   sound: boolean;
@@ -41,8 +49,8 @@ export interface State {
 const KEY = "vg_app_v1";
 const MAX_EVENTS = 100;
 
-function load(): Pick<State, "started" | "lang" | "theme" | "sound" | "family"> {
-  const fallback = { started: false, lang: "bn" as Lang, theme: "auto" as ThemePref, sound: true, family: [] as Contact[] };
+function load(): Pick<State, "started" | "mode" | "lang" | "theme" | "sound" | "family"> {
+  const fallback = { started: false, mode: "demo" as Mode, lang: "bn" as Lang, theme: "auto" as ThemePref, sound: true, family: [] as Contact[] };
   try {
     return { ...fallback, ...JSON.parse(localStorage.getItem(KEY) || "{}") };
   } catch {
@@ -50,10 +58,13 @@ function load(): Pick<State, "started" | "lang" | "theme" | "sound" | "family"> 
   }
 }
 
+const saved = load();
 let state: State = {
-  ...load(),
-  sites: SITES,
-  devices: seedDevices(),
+  ...saved,
+  auth: undefined,
+  closeReq: {},
+  sites: saved.mode === "demo" ? SITES : [],
+  devices: saved.mode === "demo" ? seedDevices() : {},
   events: [],
   alarmFor: null,
 };
@@ -61,9 +72,9 @@ let state: State = {
 const listeners = new Set<() => void>();
 
 function save() {
-  const { started, lang, theme, sound, family } = state;
+  const { started, mode, lang, theme, sound, family } = state;
   try {
-    localStorage.setItem(KEY, JSON.stringify({ started, lang, theme, sound, family }));
+    localStorage.setItem(KEY, JSON.stringify({ started, mode, lang, theme, sound, family }));
   } catch {
     /* private mode: settings last for this session only */
   }
@@ -82,7 +93,12 @@ function apply(id: string, fn: (d: Device, now: number) => { device: Device; eve
   set({ devices: { ...state.devices, [id]: res.device }, events: [...res.events.reverse(), ...state.events].slice(0, MAX_EVENTS) });
 }
 
-function raiseAlarm(deviceId: string) {
+/** For live.ts: push backend updates into the store. */
+export function setLive(patch: Partial<State>) {
+  if (state.mode === "live") set(patch);
+}
+
+export function raiseAlarm(deviceId: string) {
   const d = state.devices[deviceId];
   const site = state.sites.find((s) => s.id === d.siteId);
   const place = site ? `${site.name[state.lang]} · ${d.name[state.lang]}` : d.name[state.lang];
@@ -93,6 +109,7 @@ function raiseAlarm(deviceId: string) {
 }
 
 function tick() {
+  if (state.mode !== "demo") return;
   const now = Date.now();
   const devices: Record<string, Device> = {};
   const fresh: AppEvent[] = [];
@@ -114,18 +131,46 @@ export function startSimulation() {
   if (interval === null) interval = window.setInterval(tick, 1000);
 }
 
+const live = () => import("./live");
+
+export function startLive() {
+  void live().then((m) => m.init());
+}
+
 export const actions = {
-  start: () => set({ started: true }),
+  start: () => set({ started: true, mode: "demo", sites: SITES, devices: seedDevices(), events: [] }),
+  startLive: () => {
+    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null });
+    startLive();
+  },
+  switchToDemo: () => {
+    stopAlarmSound();
+    set({ mode: "demo", sites: SITES, devices: seedDevices(), events: [], alarmFor: null });
+  },
+  signOut: () => {
+    stopAlarmSound();
+    void live().then((m) => m.signOut());
+    set({ started: false, mode: "demo", auth: undefined, sites: SITES, devices: seedDevices(), events: [], alarmFor: null });
+  },
   setLang: (lang: Lang) => set({ lang }),
   setTheme: (theme: ThemePref) => set({ theme }),
   setSound: (sound: boolean) => {
     if (!sound) stopAlarmSound();
     set({ sound });
   },
-  addContact: (c: Contact) => set({ family: [...state.family, c].slice(0, 3) }),
-  removeContact: (i: number) => set({ family: state.family.filter((_, j) => j !== i) }),
+  addContact: (c: Contact) => {
+    set({ family: [...state.family, c].slice(0, 3) });
+    if (state.mode === "live") void live().then((m) => m.saveFamily(state.family));
+  },
+  removeContact: (i: number) => {
+    set({ family: state.family.filter((_, j) => j !== i) });
+    if (state.mode === "live") void live().then((m) => m.saveFamily(state.family));
+  },
   leak: (id = DEMO_DEVICE) => apply(id, (d) => startLeak(d)),
-  remoteClose: (id: string) => apply(id, remoteClose),
+  remoteClose: (id: string) => {
+    if (state.mode === "live") void live().then((m) => m.sendClose(id));
+    else apply(id, remoteClose);
+  },
   regulatorOff: (id: string) => apply(id, regulatorOff),
   reset: (id: string) => apply(id, manualReset),
   closeAlarm: () => {

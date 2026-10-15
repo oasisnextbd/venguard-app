@@ -80,13 +80,26 @@ VenGuard Orange `#E85D0C`, Deep Orange `#B8460A`, Guard Navy `#0B2A4A`, Sand `#F
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
 icon and a word, not colour alone. No placeholder prices or contact details.
 
-## Connecting real devices
+## Live mode (real devices)
 
-Screens depend only on the `Device` and `AppEvent` shapes in `src/lib/sim.ts`. To go live,
-replace the `tick()` source in `src/lib/store.ts` with a subscription to the VenGuard
-backend (Firebase Realtime Database; the backend lives in
-`backend/connected-firebase` of the website repository), add phone-number sign-in, and
-keep `remoteClose` as the only command the app can send.
+The welcome screen offers **Sign in to my VenGuard** next to the demo. Live mode uses the Firebase
+project `venguard-connected` on the free Spark plan (`src/lib/firebase.ts`, loaded only on sign-in):
+
+- Sign-in with a phone number. During the pilot only the test numbers set in the Firebase console
+  work in the Android app (the browser reCAPTCHA can't run there); the web app also takes real numbers
+  once SMS is enabled. Real SMS sign-in on Android needs the native Firebase plugin (later).
+- **Add a VenGuard** with the device ID and 12-character code from its sticker.
+- Live gas level, valve, fan, battery and history; the full-screen alarm when a device reports a leak;
+  **Close the gas now** sends a `close` command and shows the device's confirmation. There is no way
+  to send "open"; the database rules refuse it.
+- Not on the free plan: SMS to family, notifications while the app is closed, online payment.
+
+Backend, security rules and the device side: `backend/connected-firebase` in the website repository
+(`database.rules.json`, `DEVICE_API.md` → "Free plan (Spark) edition", `tools/provision-spark.mjs`).
+
+`src/lib/live.ts` maps the database into the same `Device`/`AppEvent` shapes the demo uses, so every
+screen works in both modes. End-to-end check (customer in a browser + simulated device through the
+rules): run the Auth and Database emulators, load the rules, then `VITE_FIREBASE_EMULATORS=1 npm run dev`.
 
 ## Android release signing (for Google Play)
 

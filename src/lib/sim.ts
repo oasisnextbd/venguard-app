@@ -37,7 +37,7 @@ export interface Device {
   history: number[]; // last HISTORY readings, oldest first
   valve: Valve;
   fan: boolean;
-  battery: number; // %
+  battery: number | null; // %, null = not reported (live devices)
   online: boolean;
   leaking: boolean; // demo: a leak source is active
   confirm: number; // seconds spent above THRESHOLD
@@ -59,7 +59,10 @@ export type EventType =
   | "air_clear"
   | "reset"
   | "remote_close"
-  | "regulator_off";
+  | "regulator_off"
+  | "test"
+  | "battery_low"
+  | "tamper";
 
 export interface AppEvent {
   id: string;
@@ -159,7 +162,7 @@ export function statusOf(d: Device): Status {
   if (d.alarm) return "danger";
   if (d.confirm > 0) return "checking";
   if (d.valve === "closed") return "gas_off";
-  if (d.battery < BATTERY_LOW) return "battery";
+  if (d.battery !== null && d.battery < BATTERY_LOW) return "battery";
   return "safe";
 }
 

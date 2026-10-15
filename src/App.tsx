@@ -14,6 +14,8 @@ import { Family } from "./screens/Family";
 import { Home } from "./screens/Home";
 import { SiteScreen } from "./screens/Site";
 import { Welcome } from "./screens/Welcome";
+import { AddDevice } from "./screens/AddDevice";
+import { SignIn } from "./screens/SignIn";
 
 const TABS: { route: Route; icon: IconName; label: "tabHome" | "tabAlerts" | "tabFamily" | "tabAccount" }[] = [
   { route: { name: "home" }, icon: "home", label: "tabHome" },
@@ -39,15 +41,17 @@ function useTheme() {
 }
 
 export function App() {
-  const { started, lang, events, devices } = useApp();
+  const { started, mode, auth, lang, events, devices } = useApp();
   const { t } = useT();
   const route = useRoute();
   useTheme();
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   if (!started) return <Welcome />;
+  if (mode === "live" && auth === undefined) return <main className="welcome"><p className="muted">{t("loading")}</p></main>;
+  if (mode === "live" && auth === null) return <SignIn />;
 
-  const tabOf = route.name === "device" || route.name === "site" ? "home" : route.name;
+  const tabOf = route.name === "device" || route.name === "site" || route.name === "add" ? "home" : route.name;
   const unread = Object.values(devices).some((d) => statusOf(d) === "danger") ? 1 : 0;
 
   return (
@@ -55,7 +59,7 @@ export function App() {
       <a className="skip-link" href="#content">{t("tabHome")}</a>
       <header className="topbar">
         <a href="#/" className="topbar-logo" aria-label="VenGuard"><Logo size={24} /></a>
-        <span className="demo-chip" title={t("demoNote")}>{t("demo")}</span>
+        {mode === "demo" && <span className="demo-chip" title={t("demoNote")}>{t("demo")}</span>}
         <nav className="tabs" aria-label="VenGuard">
           {TABS.map((tab) => (
             <a key={tab.label} href={href(tab.route)} aria-current={tabOf === tab.route.name ? "page" : undefined}>
@@ -75,6 +79,7 @@ export function App() {
         {route.name === "alerts" && <Alerts />}
         {route.name === "family" && <Family />}
         {route.name === "account" && <Account />}
+        {route.name === "add" && <AddDevice />}
       </div>
       <AlarmSheet />
     </div>

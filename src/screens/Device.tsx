@@ -7,7 +7,7 @@ import { actions, useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 
 export function DeviceScreen({ id }: { id: string }) {
-  const { devices, sites, events } = useApp();
+  const { devices, sites, events, mode, closeReq } = useApp();
   const { t, n, lang } = useT();
   const d = devices[id];
   if (!d) return <main className="page"><p>404</p></main>;
@@ -65,17 +65,26 @@ export function DeviceScreen({ id }: { id: string }) {
       <div className="tiles">
         <div className="tile"><span className="reading-label">{t("valve")}</span><strong>{valveWord}</strong></div>
         <div className="tile"><span className="reading-label">{t("fan")}</span><strong>{t(d.fan ? "on" : "off")}</strong></div>
-        <div className="tile"><span className="reading-label">{t("battery")}</span><strong>{n(d.battery)}%</strong></div>
+        <div className="tile"><span className="reading-label">{t("battery")}</span><strong>{d.battery === null ? "—" : `${n(d.battery)}%`}</strong></div>
       </div>
 
-      {hasValve && d.valve === "open" && d.online && (
+      {hasValve && d.valve === "open" && (
         <section className="panel">
-          <button type="button" className="btn btn--danger btn--block" onClick={() => actions.remoteClose(id)}>
-            <Icon name="valve" />{t("closeNow")}
-          </button>
-          <p className="small muted mt">{t("closeNowSub")}</p>
+          {d.online ? (
+            <>
+              <button type="button" className="btn btn--danger btn--block" disabled={closeReq[id] === "sent"} onClick={() => actions.remoteClose(id)}>
+                <Icon name="valve" />{t("closeNow")}
+              </button>
+              <p className="small muted mt">{t("closeNowSub")}</p>
+            </>
+          ) : (
+            <p className="small muted">{t("offlineNoClose")}</p>
+          )}
+          {closeReq[id] === "sent" && <p className="small mt" role="status">{t("closeSent")}</p>}
+          {closeReq[id] === "failed" && <p className="error mt" role="alert">{t("closeFailed")}</p>}
         </section>
       )}
+      {d.valve === "closed" && (closeReq[id] === "closed" || closeReq[id] === "already_closed") && <p className="small" role="status">{t("closeDone")}</p>}
 
       {d.valve === "closed" && (
         <section className="panel">
@@ -85,13 +94,13 @@ export function DeviceScreen({ id }: { id: string }) {
             <li>{t("reset2")}</li>
             <li>{t("reset3")}</li>
           </ol>
-          {canReset(d)
+          {mode === "live" ? null : canReset(d)
             ? <button type="button" className="btn btn--secondary btn--block demo-btn" onClick={() => actions.reset(id)}><Icon name="lever" />{t("demoReset")}</button>
             : <p className="small muted">{t("resetWait")}</p>}
         </section>
       )}
 
-      {d.online && (
+      {mode === "demo" && d.online && (
         <div className="demo-actions">
           {!d.leaking && !d.alarm && d.valve !== "closed" && (
             <button type="button" className="btn btn--ghost demo-btn" onClick={() => actions.leak(id)}><Icon name="play" size={18} />{t("demoLeak")}</button>

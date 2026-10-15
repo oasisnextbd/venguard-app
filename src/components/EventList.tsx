@@ -13,9 +13,12 @@ const EVENT_ICON: Record<EventType, IconName> = {
   reset: "lever",
   remote_close: "valve",
   regulator_off: "valve",
+  test: "check",
+  battery_low: "battery",
+  tamper: "alert",
 };
 
-const URGENT: EventType[] = ["leak_confirmed"];
+const URGENT: EventType[] = ["leak_confirmed", "tamper"];
 
 /** Timeline of events, newest first. `showPlace` adds the kitchen name (Alerts tab). */
 export function EventList({ events, showPlace = false }: { events: AppEvent[]; showPlace?: boolean }) {

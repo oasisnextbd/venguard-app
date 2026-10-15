@@ -15,6 +15,7 @@ export function Welcome() {
           <button type="button" lang="en" aria-pressed={lang === "en"} onClick={() => actions.setLang("en")}>English</button>
         </div>
         <button type="button" className="btn btn--primary btn--block" onClick={actions.start}>{t("startDemo")}</button>
+        <button type="button" className="btn btn--secondary btn--block" onClick={actions.startLive}>{t("signInReal")}</button>
         <p className="small muted">{t("demoNote")}</p>
       </div>
     </main>

@@ -4,7 +4,7 @@
    (OASIS_official_website/venguard/assets/css/venguard.css). Components use
    semantic tokens only; themes redefine the tokens.
    Contents: 1 fonts · 2 tokens · 3 base · 4 shell · 5 buttons · 6 status
-             7 cards · 8 device · 9 lists/forms · 10 alarm · 11 welcome
+             7 cards · 8 device · 9 lists/forms · 10 alarm · 11 welcome · 12 live mode
    ========================================================================= */
 
 /* 1 · Fonts (SIL OFL, see public/fonts/OFL.txt) */
@@ -269,3 +269,10 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* 12 · Live mode: sign-in, empty state */
+.form.stretch { justify-self: stretch; }
+.link-btn { background: none; border: 0; padding: 4px 0; color: var(--accent-text); font-weight: 700; text-decoration: underline; cursor: pointer; }
+.empty-card { display: grid; gap: 12px; justify-items: start; padding: 24px; }
+.arrow-link { display: inline-flex; align-items: center; gap: 8px; color: var(--accent-text); font-weight: 700; text-decoration: none; }
+.btn:disabled { opacity: .6; cursor: default; }

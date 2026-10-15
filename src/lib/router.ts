@@ -7,13 +7,14 @@ export type Route =
   | { name: "site"; id: string }
   | { name: "alerts" }
   | { name: "family" }
-  | { name: "account" };
+  | { name: "account" }
+  | { name: "add" };
 
 export function parse(hash: string): Route {
   const [, a, b] = hash.replace(/^#/, "").split("/");
   if (a === "device" && b) return { name: "device", id: decodeURIComponent(b) };
   if (a === "site" && b) return { name: "site", id: decodeURIComponent(b) };
-  if (a === "alerts" || a === "family" || a === "account") return { name: a };
+  if (a === "alerts" || a === "family" || a === "account" || a === "add") return { name: a };
   return { name: "home" };
 }
 
