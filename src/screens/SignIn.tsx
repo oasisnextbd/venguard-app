@@ -14,6 +14,7 @@ export function SignIn() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ErrorKey | "">("");
+  const [detail, setDetail] = useState(""); // Firebase error code, shown small to help support
 
   const send = async (e: FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ export function SignIn() {
     if (!PHONE.test(p)) return setError("badPhone");
     setBusy(true);
     setError("");
+    setDetail("");
     const live = await import("../lib/live");
     try {
       await live.sendCode(p, "send-code");
@@ -28,6 +30,7 @@ export function SignIn() {
       setStep("code");
     } catch (err) {
       setError(live.errorKey(err));
+      setDetail((err as { code?: string })?.code || "");
     } finally {
       setBusy(false);
     }
@@ -37,11 +40,13 @@ export function SignIn() {
     e.preventDefault();
     setBusy(true);
     setError("");
+    setDetail("");
     const live = await import("../lib/live");
     try {
       await live.confirmCode(code.trim());
     } catch (err) {
       setError(live.errorKey(err));
+      setDetail((err as { code?: string })?.code || "");
       setBusy(false);
     }
   };
@@ -55,14 +60,14 @@ export function SignIn() {
           <form className="form stretch" onSubmit={send} noValidate>
             <p className="muted">{t("signInLead")}</p>
             <label>{t("phone")}<input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="01XXXXXXXXX" aria-invalid={error === "badPhone"} /></label>
-            {error && <p className="error" role="alert">{t(error)}</p>}
+            {error && <p className="error" role="alert">{t(error)}{detail && <span className="error-code">{detail}</span>}</p>}
             <button id="send-code" type="submit" className="btn btn--primary btn--block" disabled={busy}>{busy ? t("loading") : t("sendCode")}</button>
           </form>
         ) : (
           <form className="form stretch" onSubmit={verify} noValidate>
             <p className="muted">{t("codeSentTo", { phone: n(phone) })}</p>
             <label>{t("codeLabel")}<input value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" aria-invalid={error === "wrongCode"} /></label>
-            {error && <p className="error" role="alert">{t(error)}</p>}
+            {error && <p className="error" role="alert">{t(error)}{detail && <span className="error-code">{detail}</span>}</p>}
             <button type="submit" className="btn btn--primary btn--block" disabled={busy || code.length !== 6}>{busy ? t("loading") : t("verify")}</button>
             <button type="button" className="btn btn--ghost btn--block" onClick={() => { setStep("phone"); setCode(""); setError(""); }}>{t("changeNumber")}</button>
           </form>

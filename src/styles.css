@@ -276,3 +276,4 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .empty-card { display: grid; gap: 12px; justify-items: start; padding: 24px; }
 .arrow-link { display: inline-flex; align-items: center; gap: 8px; color: var(--accent-text); font-weight: 700; text-decoration: none; }
 .btn:disabled { opacity: .6; cursor: default; }
+.error-code { display: block; margin-top: 4px; font: 400 .78rem/1.3 ui-monospace, monospace; color: var(--text-muted); }

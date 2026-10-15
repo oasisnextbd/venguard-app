@@ -154,7 +154,7 @@ const dict = {
   wrongCode: { bn: "কোডটি সঠিক নয় বা মেয়াদ শেষ। আবার চেষ্টা করুন।", en: "That code is wrong or has expired. Try again." },
   tooMany: { bn: "অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।", en: "Too many attempts. Please try again later." },
   badPhone: { bn: "০১ দিয়ে শুরু ১১ সংখ্যার নম্বর লিখুন।", en: "Enter an 11-digit number starting with 01." },
-  notAllowed: { bn: "এই নম্বরে এখন সাইন ইন করা যাচ্ছে না। পাইলটের জন্য অনুমোদিত নম্বর ব্যবহার করুন।", en: "Sign-in is not available for this number yet. Use a number approved for the pilot." },
+  notAllowed: { bn: "এই নম্বরে এখন সাইন ইন করা যাচ্ছে না। পাইলটের তালিকায় থাকা নম্বরটি ঠিকভাবে লিখুন।", en: "Sign-in is not available for this number yet. Check you typed a number on the pilot list." },
   signInFailed: { bn: "সাইন ইন হয়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।", en: "Sign-in failed. Check your internet connection and try again." },
   pilotNote: { bn: "পাইলট পর্যায়: শুধু অনুমোদিত নম্বর দিয়ে সাইন ইন করা যায়।", en: "Pilot stage: only approved numbers can sign in." },
   loading: { bn: "লোড হচ্ছে…", en: "Loading…" },
