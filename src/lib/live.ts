@@ -95,10 +95,10 @@ let confirmation: ConfirmationResult | null = null;
 let verifier: RecaptchaVerifier | null = null;
 
 /** Step 1: send the code. `phone` is a Bangladeshi mobile number like 01XXXXXXXXX. */
-export async function sendCode(phone: string, buttonId: string): Promise<void> {
+export async function sendCode(phone: string, containerId: string): Promise<void> {
   init();
   verifier?.clear();
-  verifier = new RecaptchaVerifier(auth, buttonId, { size: "invisible" });
+  verifier = new RecaptchaVerifier(auth, containerId, { size: "invisible" });
   confirmation = await signInWithPhoneNumber(auth, "+88" + phone, verifier);
 }
 

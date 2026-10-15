@@ -25,7 +25,7 @@ export function SignIn() {
     setDetail("");
     const live = await import("../lib/live");
     try {
-      await live.sendCode(p, "send-code");
+      await live.sendCode(p, "recaptcha-box");
       setPhone(p);
       setStep("code");
     } catch (err) {
@@ -57,14 +57,14 @@ export function SignIn() {
         <Logo size={36} />
         <h1>{t("signInTitle")}</h1>
         {step === "phone" ? (
-          <form className="form stretch" onSubmit={send} noValidate>
+          <form key="phone" className="form stretch" onSubmit={send} noValidate>
             <p className="muted">{t("signInLead")}</p>
             <label>{t("phone")}<input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="01XXXXXXXXX" aria-invalid={error === "badPhone"} /></label>
             {error && <p className="error" role="alert">{t(error)}{detail && <span className="error-code">{detail}</span>}</p>}
-            <button id="send-code" type="submit" className="btn btn--primary btn--block" disabled={busy}>{busy ? t("loading") : t("sendCode")}</button>
+            <button type="submit" className="btn btn--primary btn--block" disabled={busy}>{busy ? t("loading") : t("sendCode")}</button>
           </form>
         ) : (
-          <form className="form stretch" onSubmit={verify} noValidate>
+          <form key="code" className="form stretch" onSubmit={verify} noValidate>
             <p className="muted">{t("codeSentTo", { phone: n(phone) })}</p>
             <label>{t("codeLabel")}<input value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" aria-invalid={error === "wrongCode"} /></label>
             {error && <p className="error" role="alert">{t(error)}{detail && <span className="error-code">{detail}</span>}</p>}
@@ -72,6 +72,9 @@ export function SignIn() {
             <button type="button" className="btn btn--ghost btn--block" onClick={() => { setStep("phone"); setCode(""); setError(""); }}>{t("changeNumber")}</button>
           </form>
         )}
+        {/* Invisible reCAPTCHA lives in its own box, never on a button: a button-bound widget keeps
+            intercepting clicks after React reuses that button for the next step. */}
+        <div id="recaptcha-box" />
         <p className="small muted">{t("pilotNote")}</p>
         <button type="button" className="link-btn" onClick={actions.switchToDemo}>{t("switchDemo")}</button>
       </div>
