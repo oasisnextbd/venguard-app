@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VenGuard device simulator</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+</head>
+<body>
+<main class="page sim">
+  <header class="device-head">
+    <div>
+      <h1>Device simulator</h1>
+      <p class="muted">For demos and firmware development. This page signs in as one VenGuard device and behaves like it: it reports gas, valve, fan and battery, sends a heartbeat, and obeys <em>close</em> commands from the app. Staff tool, English only.</p>
+    </div>
+  </header>
+
+  <form id="login" class="panel form">
+    <label>Device ID<input name="id" autocomplete="off" placeholder="VG-DEMO01" required></label>
+    <label>Device email<input name="email" type="email" autocomplete="username" placeholder="vg-demo01@venguard-connected.firebaseapp.com" required></label>
+    <label>Device password<input name="password" type="password" autocomplete="current-password" required></label>
+    <p class="small muted">The password is never saved by this page. The ID and email are remembered in this browser only.</p>
+    <p id="login-error" class="error" role="alert" hidden></p>
+    <button class="btn btn--primary" type="submit">Connect as this device</button>
+  </form>
+
+  <section id="panel" hidden>
+    <div class="panel sim-status" aria-live="polite">
+      <div class="row"><strong id="sim-id"></strong><span id="sim-online" class="pill pill--safe">Online</span></div>
+      <div class="tiles">
+        <div class="tile"><span class="reading-label">Gas</span><strong id="sim-gas">0</strong></div>
+        <div class="tile"><span class="reading-label">Valve</span><strong id="sim-valve">open</strong></div>
+        <div class="tile"><span class="reading-label">Fan</span><strong id="sim-fan">off</strong></div>
+        <div class="tile"><span class="reading-label">Alarm</span><strong id="sim-alarm">no</strong></div>
+        <div class="tile"><span class="reading-label">Battery</span><strong id="sim-battery">80%</strong></div>
+        <div class="tile"><span class="reading-label">Kit</span><strong id="sim-kit">…</strong></div>
+      </div>
+    </div>
+    <div class="panel sim-actions">
+      <button class="btn btn--danger" data-act="leak">Start a leak</button>
+      <button class="btn btn--secondary" data-act="regulator">Turn regulator off by hand</button>
+      <button class="btn btn--secondary" data-act="reset">Lift the reset lever</button>
+      <button class="btn btn--secondary" data-act="battery">Toggle low battery</button>
+      <button class="btn btn--secondary" data-act="test">Press test button</button>
+      <button class="btn btn--ghost" data-act="offline">Go offline / online</button>
+      <button class="btn btn--ghost" data-act="disconnect">Disconnect</button>
+    </div>
+    <div class="panel"><h2 class="panel-title">Log</h2><ul id="log" class="sim-log"></ul></div>
+  </section>
+</main>
+<script type="module" src="/src/simulator/main.ts"></script>
+</body>
+</html>

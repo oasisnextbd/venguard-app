@@ -10,7 +10,8 @@ export function DeviceScreen({ id }: { id: string }) {
   const { devices, sites, events, mode, closeReq } = useApp();
   const { t, n, lang } = useT();
   const d = devices[id];
-  if (!d) return <main className="page"><p>404</p></main>;
+  // Live mode: just after adding a device its data takes a moment to arrive.
+  if (!d) return <main className="page"><p className="muted">{mode === "live" ? t("loading") : "404"}</p></main>;
   const site = sites.find((s) => s.id === d.siteId)!;
   const status = statusOf(d);
   const hasValve = d.valve !== "none";

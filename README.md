@@ -101,6 +101,15 @@ Backend, security rules and the device side: `backend/connected-firebase` in the
 screen works in both modes. End-to-end check (customer in a browser + simulated device through the
 rules): run the Auth and Database emulators, load the rules, then `VITE_FIREBASE_EMULATORS=1 npm run dev`.
 
+## Device simulator (demos and firmware work)
+
+`simulator.html` (published at https://oasisnextbd.github.io/venguard-app/simulator.html) signs in as
+one device and behaves like it, through the same database paths and rules as real firmware: it
+reports state and heartbeat, posts events, and obeys `close` commands (acts, acks once, clears the
+command). It reuses `src/lib/sim.ts`, so it behaves exactly like the in-app demo. Buttons: start a
+leak, turn the regulator off, lift the reset lever, low battery, test button, go offline.
+Register a demo device first (see the website repo: `tools/provision-spark.mjs` and the setup guide).
+
 ## Android release signing (for Google Play)
 
 CI signs with a shared debug key by default (fine for demos; updates install over each
