@@ -85,9 +85,17 @@ icon and a word, not colour alone. No placeholder prices or contact details.
 The welcome screen offers **Sign in to my VenGuard** next to the demo. Live mode uses the Firebase
 project `venguard-connected` on the free Spark plan (`src/lib/firebase.ts`, loaded only on sign-in):
 
-- Sign-in with a phone number. During the pilot only the test numbers set in the Firebase console
-  work in the Android app (the browser reCAPTCHA can't run there); the web app also takes real numbers
-  once SMS is enabled. Real SMS sign-in on Android needs the native Firebase plugin (later).
+- Sign-in (`src/screens/SignIn.tsx`; enable each method in Firebase console → Authentication →
+  Sign-in method):
+  - **Continue with Google** — web only. Google blocks its sign-in page inside app WebViews, so the
+    Android app hides it until the native Firebase plugin is added (needs `google-services.json` and
+    the APK's SHA-1 in the Firebase console).
+  - **Email + password** — web and Android, with "Forgot password?" (Firebase sends the reset email).
+  - **Phone number** — only the test numbers set in the console during the pilot (real SMS needs a
+    paid plan; on Android also the native plugin).
+
+  Devices belong to the Firebase account (uid), so each sign-in method is a separate account: a device
+  added under the phone account is not seen by the Google account until it is added there too.
 - **Add a VenGuard** with the device ID and 12-character code from its sticker.
 - Live gas level, valve, fan, battery and history; the full-screen alarm when a device reports a leak;
   **Close the gas now** sends a `close` command and shows the device's confirmation. There is no way

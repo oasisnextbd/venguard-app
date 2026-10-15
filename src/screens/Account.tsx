@@ -57,7 +57,7 @@ export function Account() {
 
       {mode === "live" && auth && (
         <section className="panel list">
-          <p className="list-link"><Icon name="user" />{t("signedInAs", { phone: n(auth.phone.replace(/^\+88/, "")) })}</p>
+          <p className="list-link"><Icon name="user" />{t("signedInAs", { who: auth.who.startsWith("+88") ? n(auth.who.slice(3)) : auth.who })}</p>
           <button type="button" className="list-link" onClick={actions.signOut}><Icon name="back" />{t("signOut")}<Icon name="chevron" size={18} /></button>
         </section>
       )}

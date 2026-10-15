@@ -11,11 +11,16 @@ import { type FirebaseApp, initializeApp } from "firebase/app";
 import {
   type Auth,
   type ConfirmationResult,
+  GoogleAuthProvider,
   RecaptchaVerifier,
   connectAuthEmulator,
+  createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
   signInWithPhoneNumber,
+  signInWithPopup,
   signOut as fbSignOut,
 } from "firebase/auth";
 import {
@@ -83,7 +88,7 @@ export function init() {
   onAuthStateChanged(auth, (user) => {
     stopWatching();
     if (user) {
-      setLive({ auth: { uid: user.uid, phone: user.phoneNumber || "" } });
+      setLive({ auth: { uid: user.uid, who: user.email || user.phoneNumber || "" } });
       watchUser(user.uid);
     } else {
       setLive({ auth: null, devices: {}, sites: [], events: [] });
@@ -94,7 +99,39 @@ export function init() {
 let confirmation: ConfirmationResult | null = null;
 let verifier: RecaptchaVerifier | null = null;
 
-/** Step 1: send the code. `phone` is a Bangladeshi mobile number like 01XXXXXXXXX. */
+/*
+ * Three ways in, all free on the Spark plan except real SMS:
+ *   Google  — web only (Google blocks its sign-in page inside app WebViews; the Android app needs
+ *             the native Firebase plugin for this, later);
+ *   email + password — web and Android;
+ *   phone   — test numbers from the Firebase console (real SMS needs a paid plan).
+ * Devices belong to the account (uid), not to the sign-in method.
+ */
+
+export async function signInGoogle(): Promise<void> {
+  init();
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  await signInWithPopup(auth, provider);
+}
+
+export async function signInEmail(email: string, password: string): Promise<void> {
+  init();
+  await signInWithEmailAndPassword(auth, email, password);
+}
+
+export async function createAccount(email: string, password: string): Promise<void> {
+  init();
+  await createUserWithEmailAndPassword(auth, email, password);
+}
+
+/** Firebase hides whether the address has an account, so the app always says "if it exists". */
+export async function resetPassword(email: string): Promise<void> {
+  init();
+  await sendPasswordResetEmail(auth, email);
+}
+
+/** Phone step 1: send the code. `phone` is a Bangladeshi mobile number like 01XXXXXXXXX. */
 export async function sendCode(phone: string, containerId: string): Promise<void> {
   init();
   verifier?.clear();
@@ -102,7 +139,7 @@ export async function sendCode(phone: string, containerId: string): Promise<void
   confirmation = await signInWithPhoneNumber(auth, "+88" + phone, verifier);
 }
 
-/** Step 2: confirm the 6-digit code. */
+/** Phone step 2: confirm the 6-digit code. */
 export async function confirmCode(code: string): Promise<void> {
   if (!confirmation) throw new Error("auth/missing-verification-id");
   await confirmation.confirm(code);
@@ -113,9 +150,19 @@ export async function signOut() {
   if (app) await fbSignOut(auth);
 }
 
+export type ErrorKey =
+  | "wrongCode" | "tooMany" | "badPhone" | "notAllowed" | "signInFailed"
+  | "wrongPassword" | "emailInUse" | "weakPassword" | "badEmail" | "popupBlocked" | "cancelled";
+
 /** Map Firebase errors to translation keys. */
-export function errorKey(e: unknown): "wrongCode" | "tooMany" | "badPhone" | "notAllowed" | "signInFailed" {
+export function errorKey(e: unknown): ErrorKey {
   const code = (e as { code?: string })?.code || "";
+  if (code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) return "cancelled";
+  if (code.includes("popup-blocked")) return "popupBlocked";
+  if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "wrongPassword";
+  if (code.includes("email-already-in-use")) return "emailInUse";
+  if (code.includes("weak-password")) return "weakPassword";
+  if (code.includes("invalid-email") || code.includes("missing-email")) return "badEmail";
   if (code.includes("invalid-verification-code") || code.includes("code-expired")) return "wrongCode";
   if (code.includes("too-many-requests") || code.includes("quota-exceeded")) return "tooMany";
   if (code.includes("invalid-phone-number")) return "badPhone";

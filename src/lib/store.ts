@@ -34,7 +34,7 @@ export interface State {
   started: boolean;
   mode: Mode;
   /** live mode: undefined = still checking, null = signed out */
-  auth: { uid: string; phone: string } | null | undefined;
+  auth: { uid: string; who: string } | null | undefined; // who: email or phone number
   closeReq: Record<string, CloseStatus>;
   lang: Lang;
   theme: ThemePref;

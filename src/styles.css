@@ -283,3 +283,13 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .sim-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .sim-log { list-style: none; margin: 0; padding: 0; font: 400 .85rem/1.6 ui-monospace, monospace; max-height: 260px; overflow-y: auto; }
 .sim [hidden] { display: none !important; } /* .form/.panel set display, which would override [hidden] */
+
+/* 14 · Sign-in choices (Google, email, phone) */
+.signin-alt { justify-self: stretch; display: grid; gap: 14px; }
+.btn--google { background: var(--surface); border: 1.5px solid var(--line-strong); color: var(--text); }
+.btn--google:hover { background: var(--bg-alt); }
+.or { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--text-muted); font-size: .88rem; }
+.or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+.form .hint { font-weight: 400; font-size: .85rem; color: var(--text-muted); }
+.signin-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.ok-note { margin: 0; padding: 10px 12px; border-radius: var(--r); background: var(--safe-soft); color: var(--safe-text); font-weight: 700; font-size: .9rem; }
