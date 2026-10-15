@@ -138,6 +138,11 @@ export function startLive() {
 }
 
 export const actions = {
+  /** Back to the welcome screen (demo or sign-in). Keeps a live sign-in: "Sign in" then goes straight home. */
+  showWelcome: () => {
+    stopAlarmSound();
+    set({ started: false, alarmFor: null });
+  },
   start: () => set({ started: true, mode: "demo", sites: SITES, devices: seedDevices(), events: [] }),
   startLive: () => {
     set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null });

@@ -109,6 +109,11 @@ Backend, security rules and the device side: `backend/connected-firebase` in the
 screen works in both modes. End-to-end check (customer in a browser + simulated device through the
 rules): run the Auth and Database emulators, load the rules, then `VITE_FIREBASE_EMULATORS=1 npm run dev`.
 
+**Link from the website:** `https://oasisnextbd.github.io/venguard-app/#/welcome` (or `#/welcome/bn`,
+`#/welcome/en`) always opens the welcome screen with both choices, the demo and sign-in, even in a
+browser that was left in the demo. Someone already signed in goes straight to their devices
+(`src/main.tsx`).
+
 ## Device simulator (demos and firmware work)
 
 `simulator.html` (published at https://oasisnextbd.github.io/venguard-app/simulator.html) signs in as
