@@ -26,6 +26,8 @@ const paths = {
   play: <path d="M7 4v16l13-8L7 4Z" />,
   lever: <><path d="M5 19h14" /><path d="M8 19v-5h8v5" /><path d="m12 14 4-8" /><circle cx="16.5" cy="5" r="1.5" /></>,
   restart: <><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></>,
+  sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>,
+  moon: <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z" />,
 } as const;
 
 export type IconName = keyof typeof paths;

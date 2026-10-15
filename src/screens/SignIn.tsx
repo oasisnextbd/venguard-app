@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { Logo } from "../components/Logo";
+import { CornerSettings } from "../components/QuickSettings";
 import type { ErrorKey } from "../lib/live";
 import { isNative } from "../lib/platform";
 import { actions } from "../lib/store";
@@ -94,6 +95,7 @@ export function SignIn() {
 
   return (
     <main className="welcome">
+      <CornerSettings />
       <div className="welcome-inner">
         <Logo size={36} />
         <h1>{t(view === "create" ? "createTitle" : view === "forgot" ? "forgotTitle" : "signInTitle")}</h1>

@@ -132,6 +132,8 @@ const dict = {
   themeAuto: { bn: "স্বয়ংক্রিয়", en: "Auto" },
   themeDay: { bn: "দিন", en: "Day" },
   themeNight: { bn: "রাত", en: "Night" },
+  toDay: { bn: "দিনের থিমে যান", en: "Switch to day theme" },
+  toNight: { bn: "রাতের থিমে যান", en: "Switch to night theme" },
   sound: { bn: "সতর্কতার শব্দ", en: "Alarm sound" },
   notifications: { bn: "নোটিফিকেশন", en: "Notifications" },
   allow: { bn: "চালু করুন", en: "Turn on" },

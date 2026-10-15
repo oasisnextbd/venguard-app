@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { AlarmSheet } from "./components/AlarmSheet";
 import { Icon, type IconName } from "./components/Icon";
 import { Logo } from "./components/Logo";
+import { CornerSettings, LangToggle, ThemeToggle } from "./components/QuickSettings";
 import { setStatusBar } from "./lib/platform";
 import { type Route, href, useRoute } from "./lib/router";
 import { statusOf } from "./lib/sim";
@@ -48,7 +49,7 @@ export function App() {
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   if (!started) return <Welcome />;
-  if (mode === "live" && auth === undefined) return <main className="welcome"><p className="muted">{t("loading")}</p></main>;
+  if (mode === "live" && auth === undefined) return <main className="welcome"><CornerSettings /><p className="muted">{t("loading")}</p></main>;
   if (mode === "live" && auth === null) return <SignIn />;
 
   const tabOf = route.name === "device" || route.name === "site" || route.name === "add" ? "home" : route.name;
@@ -71,6 +72,10 @@ export function App() {
             </a>
           ))}
         </nav>
+        <div className="topbar-actions">
+          <LangToggle />
+          <ThemeToggle />
+        </div>
       </header>
       <div id="content">
         {route.name === "home" && <Home />}

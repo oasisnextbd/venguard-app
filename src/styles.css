@@ -293,3 +293,13 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .form .hint { font-weight: 400; font-size: .85rem; color: var(--text-muted); }
 .signin-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
 .ok-note { margin: 0; padding: 10px 12px; border-radius: var(--r); background: var(--safe-soft); color: var(--safe-text); font-weight: 700; font-size: .9rem; }
+
+/* 15 · Quick settings: language and Day/Night, in the top bar and on the welcome / sign-in screens */
+.topbar-actions { display: flex; gap: 8px; margin-left: auto; }
+@media (min-width: 900px) { .topbar-actions { margin-left: 8px; padding-left: 12px; border-left: 1px solid var(--line); } }
+.icon-btn:hover { color: var(--text); background: var(--bg-alt); }
+.icon-btn:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+.lang-btn { font: 700 .82rem/1 var(--font); color: var(--text); }
+.lang-btn:lang(bn) { font-family: var(--font-bn, var(--font)); font-size: .9rem; }
+.welcome { position: relative; }
+.corner-settings { position: absolute; top: calc(12px + var(--safe-top)); right: 16px; display: flex; gap: 8px; }

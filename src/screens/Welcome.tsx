@@ -1,4 +1,5 @@
 import { Logo } from "../components/Logo";
+import { CornerSettings } from "../components/QuickSettings";
 import { actions } from "../lib/store";
 import { useT } from "../lib/useT";
 
@@ -6,6 +7,7 @@ export function Welcome() {
   const { t, lang } = useT();
   return (
     <main className="welcome">
+      <CornerSettings lang={false} />
       <div className="welcome-inner">
         <Logo size={44} />
         <p className="welcome-tagline">{t("tagline")}</p>
