@@ -83,7 +83,7 @@ repo). `src/components/Logo.tsx` shows the primary lockup on light and the rever
 (files in `public/brand/`, at least 31 px tall / 120 px wide). App, launcher, favicon and notification
 icons use the symbol: reversed symbol on Deep Navy `#07192C` (`public/icons/`, `android/app/src/main/res/`;
 the notification icon is a white silhouette as Android requires). Replace the files with the designer's
-vector master when it exists, keeping the names.
+vector master when it exists, keeping the names. Only the logo follows that guide: the app keeps the colours, fonts and themes above.
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
 icon and a word, not colour alone. No placeholder prices or contact details.
 
