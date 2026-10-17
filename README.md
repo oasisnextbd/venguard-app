@@ -77,6 +77,13 @@ android/                Capacitor Android project (committed; build output is ig
 
 Same as the website (`docs/venguard/brand-rules.md` in OASIS_official_website):
 VenGuard Orange `#E85D0C`, Deep Orange `#B8460A`, Guard Navy `#0B2A4A`, Sand `#FBF1EA`.
+
+Logo: follow the Logo Guidelines v1.0 (`docs/venguard/VenGuard_Logo_Guidelines.docx` in the website
+repo). `src/components/Logo.tsx` shows the primary lockup on light and the reversed lockup on dark
+(files in `public/brand/`, at least 31 px tall / 120 px wide). App, launcher, favicon and notification
+icons use the symbol: reversed symbol on Deep Navy `#07192C` (`public/icons/`, `android/app/src/main/res/`;
+the notification icon is a white silhouette as Android requires). Replace the files with the designer's
+vector master when it exists, keeping the names.
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
 icon and a word, not colour alone. No placeholder prices or contact details.
 

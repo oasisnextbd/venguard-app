@@ -97,7 +97,7 @@ export function SignIn() {
     <main className="welcome">
       <CornerSettings />
       <div className="welcome-inner">
-        <Logo size={36} />
+        <Logo height={40} />
         <h1>{t(view === "create" ? "createTitle" : view === "forgot" ? "forgotTitle" : "signInTitle")}</h1>
 
         {emailView && view !== "forgot" && (

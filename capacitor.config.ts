@@ -4,9 +4,9 @@ const config: CapacitorConfig = {
   appId: "com.oasisnext.venguard",
   appName: "VenGuard",
   webDir: "dist",
-  android: { backgroundColor: "#0B2A4A" },
+  android: { backgroundColor: "#07192C" },
   plugins: {
-    LocalNotifications: { smallIcon: "ic_stat_venguard", iconColor: "#E85D0C" },
+    LocalNotifications: { smallIcon: "ic_stat_venguard", iconColor: "#FA5806" },
   },
 };
 

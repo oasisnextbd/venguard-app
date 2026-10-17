@@ -1,18 +1,17 @@
-/** VenGuard logo: the orange wave and the bar (bar takes the text colour). */
-export function LogoMark({ size = 32 }: { size?: number }) {
-  return (
-    <svg className="logo-mark" width={size * 1.2} height={size} viewBox="0 0 120 100" aria-hidden="true" focusable="false">
-      <path d="M11 63C11 48 22 41 32 43c11 2 14 20 27 20 8 0 13-5 18-10" fill="none" stroke="var(--orange)" strokeWidth="15" strokeLinecap="round" />
-      <path d="M103 14v72" stroke="currentColor" strokeWidth="14" strokeLinecap="round" />
-    </svg>
-  );
-}
+/**
+ * VenGuard logo (Logo Guidelines v1.0, in the website repo: docs/venguard/VenGuard_Logo_Guidelines.docx).
+ * Primary full-colour lockup on light, reversed lockup (white shield and wordmark, orange stripes) on dark;
+ * CSS shows one of the two from the theme. Files: public/brand/ (named as in the guide; replace them with the
+ * designer's vector master when it exists). The lockup is about 3.86 : 1; keep it at least 120 px wide (31 px tall).
+ */
+const BASE = import.meta.env.BASE_URL;
 
-export function Logo({ size = 28 }: { size?: number }) {
+export function Logo({ height = 31 }: { height?: number }) {
+  const width = Math.round(height * 3.863);
   return (
-    <span className="logo">
-      <LogoMark size={size} />
-      <span className="logo-word">VenGuard</span>
+    <span className="logo" role="img" aria-label="VenGuard">
+      <img className="logo-img logo-img--light" src={`${BASE}brand/VenGuard_Logo_Primary_FullColour_RGB.svg`} width={width} height={height} alt="" />
+      <img className="logo-img logo-img--dark" src={`${BASE}brand/VenGuard_Logo_Primary_Reversed_RGB.svg`} width={width} height={height} alt="" />
     </span>
   );
 }

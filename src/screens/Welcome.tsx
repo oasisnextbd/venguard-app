@@ -9,7 +9,7 @@ export function Welcome() {
     <main className="welcome">
       <CornerSettings lang={false} />
       <div className="welcome-inner">
-        <Logo size={44} />
+        <Logo height={52} />
         <p className="welcome-tagline">{t("tagline")}</p>
         <p className="lead">{t("welcomeLead")}</p>
         <div className="seg" role="group" aria-label={t("chooseLang")}>

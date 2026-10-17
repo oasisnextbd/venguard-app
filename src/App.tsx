@@ -59,7 +59,7 @@ export function App() {
     <div className="shell">
       <a className="skip-link" href="#content">{t("tabHome")}</a>
       <header className="topbar">
-        <a href="#/" className="topbar-logo" aria-label="VenGuard"><Logo size={24} /></a>
+        <a href="#/" className="topbar-logo" aria-label="VenGuard"><Logo height={31} /></a>
         {mode === "demo" && <span className="demo-chip" title={t("demoNote")}>{t("demo")}</span>}
         <nav className="tabs" aria-label="VenGuard">
           {TABS.map((tab) => (
