@@ -9,7 +9,7 @@ import { useSyncExternalStore } from "react";
 import { DEMO_DEVICE, PHONE_SITES, SITES, seedDevices, seedPhoneDevices, seedPhoneEvents } from "./demo";
 import type { Lang } from "./i18n";
 import { translate } from "./i18n";
-import { notify, phoneUI, startAlarmSound, stopAlarmSound, vibrate } from "./platform";
+import { notify, phoneUI, startAlarmSound, startAlarmVibration, stopAlarmSound, vibrate } from "./platform";
 import {
   type AppEvent,
   type Device,
@@ -45,6 +45,7 @@ export interface State {
   events: AppEvent[]; // newest first
   alarmFor: string | null; // device id of the open alarm sheet
   removed: Device[]; // demo: devices taken off the home screen, which can be added back
+  mitigated: string | null; // phone layout: device whose leak has just cleared (green message)
 }
 
 const KEY = "vg_app_v1";
@@ -74,6 +75,7 @@ let state: State = {
   events: saved.mode === "demo" ? demoEvents() : [],
   alarmFor: null,
   removed: [],
+  mitigated: null,
 };
 
 const listeners = new Set<() => void>();
@@ -106,14 +108,33 @@ export function setLive(patch: Partial<State>) {
   if (state.mode === "live") set(patch);
 }
 
-export function raiseAlarm(deviceId: string) {
+function placeOf(deviceId: string): string {
   const d = state.devices[deviceId];
+  if (!d) return "";
   const site = state.sites.find((s) => s.id === d.siteId);
-  const place = site ? `${site.name[state.lang]} · ${d.name[state.lang]}` : d.name[state.lang];
-  set({ alarmFor: deviceId });
+  return site ? `${site.name[state.lang]} · ${d.name[state.lang]}` : d.name[state.lang];
+}
+
+export function raiseAlarm(deviceId: string) {
+  const place = placeOf(deviceId);
+  set({ alarmFor: deviceId, mitigated: null });
   if (state.sound) startAlarmSound();
-  void vibrate();
+  if (phoneUI) startAlarmVibration();
+  else void vibrate();
   void notify(translate(state.lang, "notifTitle"), place);
+}
+
+/**
+ * The air at a device is clear again after a leak (gas back below CLEAR_LEVEL). The alarm sound stops.
+ * Phone layout: the red background goes, and a notification and a green message say the leak is mitigated.
+ * The web app keeps its alarm sheet open until the person closes it.
+ */
+export function clearAlarm(deviceId: string) {
+  if (state.alarmFor === deviceId) stopAlarmSound();
+  if (!phoneUI) return;
+  const place = placeOf(deviceId);
+  set({ alarmFor: state.alarmFor === deviceId ? null : state.alarmFor, mitigated: deviceId });
+  void notify(translate(state.lang, "mitigatedTitle"), translate(state.lang, "mitigatedBody", { place }));
 }
 
 function tick() {
@@ -130,6 +151,7 @@ function tick() {
   listeners.forEach((l) => l());
   const confirmed = fresh.find((e) => e.type === "leak_confirmed");
   if (confirmed) raiseAlarm(confirmed.deviceId);
+  for (const e of fresh) if (e.type === "air_clear") clearAlarm(e.deviceId);
   // The alarm sound stops by itself once the air is clear.
   if (state.alarmFor && !state.devices[state.alarmFor].alarm) stopAlarmSound();
 }
@@ -153,17 +175,17 @@ export const actions = {
   },
   start: () => set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [] }),
   startLive: () => {
-    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, removed: [] });
+    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, removed: [], mitigated: null });
     startLive();
   },
   switchToDemo: () => {
     stopAlarmSound();
-    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null });
+    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null, mitigated: null });
   },
   signOut: () => {
     stopAlarmSound();
     void live().then((m) => m.signOut());
-    set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null });
+    set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null, mitigated: null });
   },
   setLang: (lang: Lang) => set({ lang }),
   setTheme: (theme: ThemePref) => set({ theme }),
@@ -191,6 +213,7 @@ export const actions = {
     set({ alarmFor: null });
   },
   mute: () => stopAlarmSound(),
+  dismissMitigated: () => set({ mitigated: null }),
   /** Demo: take a device off the home screen (its events go too). Real devices are not removed from here yet. */
   removeDevice: (id: string) => {
     if (state.mode !== "demo" || !state.devices[id]) return;
@@ -211,7 +234,7 @@ export const actions = {
   },
   restartDemo: () => {
     stopAlarmSound();
-    set({ devices: demoDevices(), events: demoEvents(), alarmFor: null, removed: [] });
+    set({ devices: demoDevices(), events: demoEvents(), alarmFor: null, removed: [], mitigated: null });
   },
 };
 

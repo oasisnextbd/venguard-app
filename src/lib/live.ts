@@ -38,9 +38,9 @@ import {
   update,
 } from "firebase/database";
 import { OFFLINE_AFTER_S, firebaseConfig } from "./firebase";
-import { isNative, stopAlarmSound } from "./platform";
+import { isNative } from "./platform";
 import { type AppEvent, type Device, type EventType, type Site, HISTORY, THRESHOLD } from "./sim";
-import { type Contact, getState, raiseAlarm, setLive } from "./store";
+import { type Contact, clearAlarm, getState, raiseAlarm, setLive } from "./store";
 
 let app: FirebaseApp | null = null;
 let auth: Auth;
@@ -204,7 +204,7 @@ function watchDevice(id: string, label: Label) {
       publish();
       const alarm = !!r.state?.alarm;
       if (alarm && !r.wasAlarm) raiseAlarm(id);
-      if (!alarm && r.wasAlarm && getState().alarmFor === id) stopAlarmSound();
+      if (!alarm && r.wasAlarm) clearAlarm(id);
       r.wasAlarm = alarm;
     }, ignore),
     onValue(ref(db, `hb/${id}`), (s) => { r.hb = Number(s.val()) || undefined; publish(); }, ignore),

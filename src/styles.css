@@ -464,3 +464,32 @@ html[lang="bn"] .dev-word { font-weight: 700; letter-spacing: 0; line-height: 1.
 .phist-text { display: grid; gap: 1px; line-height: 1.35; min-width: 0; }
 .phist-text span { color: var(--text); }
 .phist-text time { color: var(--text-muted); font-size: .88rem; }
+
+/* 20 · Phone leak alarm (src/phone/LeakAlert.tsx): no separate page; the app turns red while the leak lasts.
+   Cards switch to the Night palette so they stay readable on red. */
+.pshell--alarm {
+  color-scheme: dark;
+  --bg: #A81B2E; --bg-alt: #8E1626; --surface: #0E2742; --surface-2: #0B223A; --p-panel: #10294A;
+  --text: #F3F6FA; --text-muted: #C9D6E4; --line: #1B3A5C; --line-strong: #2C4F76;
+  --accent-text: #FF8A4C; --safe-text: #3CC47F; --danger-text: #FF9AA6; --caution-text: #F5C400;
+  --safe-soft: rgb(30 158 90 / .16); --caution-soft: rgb(245 196 0 / .14); --danger-soft: rgb(215 38 61 / .2); --muted-soft: rgb(169 191 214 / .12);
+  background: var(--bg); color: var(--text); animation: alarm-bg 1.4s ease-in-out infinite alternate;
+}
+@keyframes alarm-bg { to { background-color: #C8233A; } }
+.pshell--alarm .ptop { background: transparent; }
+.pshell--alarm .logo-img--light { display: none; }
+.pshell--alarm .logo-img--dark { display: block; }
+.pshell--alarm .pdev-hero { background: transparent; }
+.pshell--alarm .pdev-hero .pill--danger { background: #fff; color: var(--gas-off); }
+.pshell--alarm .page-title, .pshell--alarm .pdev-h2, .pshell--alarm .phist-h2, .pshell--alarm .section-title { color: #fff; }
+.pcontent > .leak-banner { margin: 4px 16px 10px; }
+.leak-banner { display: flex; gap: 14px; align-items: flex-start; padding: 16px; border-radius: var(--r-lg); background: rgb(0 0 0 / .22); border: 1.5px solid rgb(255 255 255 / .45); color: #fff; }
+.leak-banner-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: #fff; color: var(--gas-off); flex: none; animation: pulse 1s infinite; }
+.leak-banner-text { display: grid; gap: 4px; line-height: 1.35; }
+.leak-banner-text strong { font-size: 1.15rem; }
+.leak-banner-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.mitigated { position: fixed; left: 12px; right: 12px; bottom: calc(var(--pnav-h) + var(--safe-bottom) + 12px); z-index: 40; display: flex; align-items: center; gap: 12px; padding: 14px 14px 14px 16px; border-radius: var(--r-lg); background: #167A45; color: #fff; box-shadow: 0 12px 30px rgb(0 0 0 / .3); animation: sheet-up .25s ease-out; }
+.mitigated-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #167A45; flex: none; }
+.mitigated-text { flex: 1; display: grid; line-height: 1.35; }
+.mitigated-text span { color: rgb(255 255 255 / .9); font-size: .92rem; }
+.mitigated-x { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgb(255 255 255 / .15); color: #fff; cursor: pointer; flex: none; }

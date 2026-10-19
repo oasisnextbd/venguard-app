@@ -108,6 +108,11 @@ The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` 
   `gasColour` in `sim.ts`, tested). LPG limits `LPG_LFL_VOL` / `LPG_HFL_VOL` are typical figures: CTO to
   confirm. Then battery and connection, the three parts with their condition, and the same actions as
   the web (close remotely, never open; reset by hand at the stove).
+- Leak alarm (`src/phone/LeakAlert.tsx`): no separate alarm page. The whole app turns red, the leaking
+  device's screen opens so its gas bar can be watched going down, and a banner gives the safety advice
+  (Mute, Call family). Sound and vibration repeat until the air is clear. Then the app returns to its
+  colours and shows "Your gas leak is mitigated", also as a phone notification (`clearAlarm` in
+  `store.ts`, for demo and live devices). The web app keeps its full-screen alarm.
 - History: a timeline of every device's events; each card names the place and device. The demo seeds a
   week of made-up history (`seedPhoneEvents()`).
 - About us: what VenGuard does, vision, recognition (BUET BRTC testing says "in progress" until the

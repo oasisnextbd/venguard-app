@@ -96,9 +96,31 @@ export function startAlarmSound(): void {
   }
 }
 
+/** Phone layout: keep vibrating every few seconds while the leak lasts (stopped with the sound). */
+let buzz: number | null = null;
+export function startAlarmVibration(): void {
+  if (buzz !== null) return;
+  void vibrate();
+  buzz = window.setInterval(() => void vibrate([600, 300, 600]), 3500);
+}
+
+/** Stops the alarm sound and the repeating vibration (Mute, or the air is clear). */
 export function stopAlarmSound(): void {
   if (timer !== null) window.clearInterval(timer);
   timer = null;
+  if (buzz !== null) window.clearInterval(buzz);
+  buzz = null;
+}
+
+/** Phone layout during a leak: red status bar with light icons, to match the red background. */
+export async function setStatusBarAlarm(): Promise<void> {
+  if (!isNative) return;
+  try {
+    await StatusBar.setStyle({ style: Style.Dark });
+    await StatusBar.setBackgroundColor({ color: "#A81B2E" });
+  } catch {
+    /* older Android versions */
+  }
 }
 
 export async function setStatusBar(dark: boolean): Promise<void> {

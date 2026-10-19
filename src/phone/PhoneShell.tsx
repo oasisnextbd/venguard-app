@@ -1,11 +1,14 @@
 /**
  * Android app layout: top bar (symbol, name, Day/Night and profile), the screen, and the orange bottom bar
  * (Home, History, About us). The web app uses the shell in App.tsx instead.
+ * During a leak there is no separate alarm page: the app turns red, opens that device so its gas bar
+ * can be watched going down, and shows LeakBanner on top (see LeakAlert.tsx).
  */
-import { AlarmSheet } from "../components/AlarmSheet";
+import { useEffect } from "react";
 import { Icon, type IconName } from "../components/Icon";
-import { ThemeToggle } from "../components/QuickSettings";
-import { type Route, href } from "../lib/router";
+import { ThemeToggle, isDark } from "../components/QuickSettings";
+import { setStatusBar, setStatusBarAlarm } from "../lib/platform";
+import { type Route, go, href } from "../lib/router";
 import { statusOf } from "../lib/sim";
 import { useApp } from "../lib/store";
 import { useT } from "../lib/useT";
@@ -15,6 +18,7 @@ import { Family } from "../screens/Family";
 import { SiteScreen } from "../screens/Site";
 import { About } from "./About";
 import { History } from "./History";
+import { LeakBanner, MitigatedMessage } from "./LeakAlert";
 import { PhoneDevice } from "./PhoneDevice";
 import { PhoneHome } from "./PhoneHome";
 
@@ -35,14 +39,19 @@ function tabOf(r: Route): Tab | null {
 }
 
 export function PhoneShell({ route }: { route: Route }) {
-  const { auth, mode, events, devices } = useApp();
+  const { auth, mode, events, devices, alarmFor, mitigated, theme } = useApp();
   const { t } = useT();
   const current = tabOf(route);
+  const leak = alarmFor && devices[alarmFor]?.alarm ? alarmFor : null;
+
+  // A new leak opens that device; the status bar turns red with the app and back after.
+  useEffect(() => { if (leak) go({ name: "device", id: leak }); }, [leak]);
+  useEffect(() => { void (leak ? setStatusBarAlarm() : setStatusBar(isDark(theme))); }, [leak, theme]);
   const hot = Object.values(devices).some((d) => statusOf(d) === "danger");
   const initial = mode === "live" && auth ? auth.who.replace(/^\+88/, "").charAt(0).toUpperCase() : "";
 
   return (
-    <div className="pshell">
+    <div className={leak ? "pshell pshell--alarm" : "pshell"}>
       <header className="ptop">
         {/* Logo Guidelines v1.0: full-colour symbol by day, reversed at night (CSS shows one from the theme). */}
         <a href="#/" className="ptop-logo" aria-label={t("tabHome")}>
@@ -59,6 +68,7 @@ export function PhoneShell({ route }: { route: Route }) {
       </header>
 
       <div className="pcontent" id="content">
+        {leak && !(route.name === "device" && route.id === leak) && <LeakBanner id={leak} />}
         {route.name === "home" && <PhoneHome />}
         {route.name === "alerts" && <History />}
         {route.name === "about" && <About />}
@@ -80,7 +90,7 @@ export function PhoneShell({ route }: { route: Route }) {
           </a>
         ))}
       </nav>
-      <AlarmSheet />
+      {mitigated && !leak && <MitigatedMessage id={mitigated} />}
     </div>
   );
 }

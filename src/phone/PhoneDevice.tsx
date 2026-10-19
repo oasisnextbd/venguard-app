@@ -22,12 +22,13 @@ import {
 import { useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 import { DeviceActions } from "../screens/Device";
+import { LeakBanner } from "./LeakAlert";
 
 const BASE = import.meta.env.BASE_URL;
 const PHOTO = { detector: "devices/detector.webp", valve: "devices/valve.webp", relay: "devices/relay.webp" };
 
 export function PhoneDevice({ id }: { id: string }) {
-  const { devices, sites, events, mode } = useApp();
+  const { devices, sites, events, mode, alarmFor } = useApp();
   const { t, n, lang } = useT();
   const d = devices[id];
   if (!d) return <main className="page"><a className="back" href="#/"><Icon name="back" size={20} />{t("back")}</a><p className="muted">{mode === "live" ? t("loading") : t("noEvents")}</p></main>;
@@ -52,6 +53,7 @@ export function PhoneDevice({ id }: { id: string }) {
 
       <div className="pdev-body">
         <GasCard device={d} />
+        {alarmFor === id && d.alarm && <LeakBanner id={id} />}
 
         <section className="pdev-stats">
           <div>
