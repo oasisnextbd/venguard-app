@@ -41,7 +41,7 @@ export function PhoneDevice({ id }: { id: string }) {
       <header className="pdev-hero">
         <a className="pdev-back" href="#/" aria-label={t("back")}><Icon name="back" size={26} /></a>
         <div className="pdev-hero-row">
-          <img className="pdev-photo" src={`${BASE}${PHOTO.detector}`} width={92} height={138} alt="" />
+          <img className="pdev-photo" src={`${BASE}${PHOTO.detector}`} width={108} height={108} alt="" />
           <div className="pdev-title">
             <h1>{site ? site.name[lang] : d.name[lang]}</h1>
             <p>{d.name[lang]}{site ? ` · ${site.area[lang]}` : ""}</p>

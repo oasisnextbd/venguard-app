@@ -397,7 +397,7 @@ html[lang="bn"] .dev-word { font-weight: 700; letter-spacing: 0; line-height: 1.
 .pdev-hero { position: relative; padding: 6px 20px 64px; background: linear-gradient(135deg, #0B2A4A 0%, #12406E 55%, #1B5C8E 100%); color: #fff; }
 .pdev-back { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-left: -10px; color: #fff; }
 .pdev-hero-row { display: flex; gap: 18px; align-items: center; margin-top: 4px; }
-.pdev-photo { flex: none; width: 92px; height: 120px; object-fit: cover; border-radius: 16px; background: #F4EBDD; box-shadow: 0 8px 24px rgb(0 0 0 / .3); }
+.pdev-photo { flex: none; width: 108px; height: 108px; object-fit: contain; border-radius: 18px; background: #F7F7F7; box-shadow: 0 8px 24px rgb(0 0 0 / .3); }
 .pdev-title { display: grid; gap: 4px; justify-items: start; min-width: 0; }
 .pdev-title h1 { color: #fff; font-size: 1.6rem; }
 .pdev-title p { color: rgb(255 255 255 / .82); line-height: 1.35; }
@@ -428,7 +428,7 @@ html[lang="bn"] .dev-word { font-weight: 700; letter-spacing: 0; line-height: 1.
 .pdev-parts { border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
 .pdev-part { display: flex; align-items: center; gap: 14px; padding: 12px 14px; }
 .pdev-part + .pdev-part { border-top: 1px solid var(--line); }
-.pdev-part img { flex: none; width: 64px; height: 64px; object-fit: cover; border-radius: 14px; background: #F4EBDD; }
+.pdev-part img { flex: none; width: 64px; height: 64px; object-fit: contain; border-radius: 14px; background: #F7F7F7; }
 .pdev-part-text { flex: 1; display: grid; gap: 2px; line-height: 1.3; min-width: 0; }
 .pdev-part-text span { color: var(--text-muted); font-size: .9rem; }
 .pdev-part-dot { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; }

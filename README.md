@@ -70,7 +70,7 @@ src/
   phone/                Android app layout: PhoneShell (top and bottom bars), PhoneHome, PhoneDevice,
                         History, About
   lib/company.ts        company facts for Account and About us (copied from the website's site.json)
-public/devices/         photos of the detector, valve and relay (prototype photo from the founders)
+public/devices/         pictures of the detector, valve and relay (the founders' 3D renders, trimmed square)
   styles.css            brand tokens, Day/Night themes, all styles
 public/                 icons, fonts (SIL OFL), web app manifest, service worker
 android/                Capacitor Android project (committed; build output is ignored)
