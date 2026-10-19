@@ -21,5 +21,9 @@ export const firebaseConfig = {
  */
 export const GOOGLE_WEB_CLIENT_ID = "879846682462-uvvrdm4q2rgquhtqor8t0tb497ke20dm.apps.googleusercontent.com";
 
-/** Seconds without a heartbeat before a device counts as offline (devices beat every 60 s). */
-export const OFFLINE_AFTER_S = 180;
+/**
+ * Seconds without a heartbeat before a device counts as offline: devices beat every 20 s, so this is three
+ * missed beats (a power cut or lost Wi-Fi shows within about a minute). A device switched off on purpose
+ * deletes its heartbeat and shows offline at once (DEVICE_API.md in the website repo).
+ */
+export const OFFLINE_AFTER_S = 65;

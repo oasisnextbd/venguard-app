@@ -34,8 +34,8 @@ and the app version from **Profile** (bottom of the page, for example `0.3.0 (65
    only your emulator, with its **device ID** and **sticker code**.
 2. Phone: **+** (top right of Home) → **Add a VenGuard** → the device ID, the sticker code, a place name
    (e.g. Home) and an area → **Add device**.
-3. Dashboard: press **Start**. Keep that page open while you test (close it and the app shows the
-   device offline within 3 minutes).
+3. Dashboard: press **Start**. Keep that page open while you test (press **Stop** or close it and the
+   app shows the device offline within seconds).
 
 | # | In the dashboard | On your phone |
 |---|---|---|
@@ -46,7 +46,8 @@ and the app version from **Profile** (bottom of the page, for example `0.3.0 (65
 | 2.5 | (phone) **Close the gas now** on the device screen | The dashboard log says the valve closed; the phone confirms. The app never offers to turn gas back on |
 | 2.6 | **Low battery** | Yellow border, "Battery low" |
 | 2.7 | **Test button** | A new card in **History** |
-| 2.8 | **Go offline** | After about 3 minutes: grey dashed panel, "Offline" |
+| 2.8 | **Go offline** (like a power cut) | Within about a minute: grey dashed panel, "Offline". **Come back online**: back within seconds |
+| 2.8b | **Stop** | Within a few seconds: "Offline" |
 | 2.9 | (phone) **Edit** → ✕ → Remove | The device leaves your account; add it again with + |
 
 A detector + relay emulator (create one with that kit) has no valve: in 2.2 the app tells you to turn the

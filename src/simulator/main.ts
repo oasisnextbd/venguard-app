@@ -91,8 +91,8 @@ async function start() {
   stopCmd = onChildAdded(ref(db, `devices/${id}/cmd`), (s: DataSnapshot) => void handleCommand(s.key!, s.val()), (e) => log(`cannot read commands: ${e.message}`));
   await sendState(true);
   await heartbeat();
-  timers.push(window.setInterval(tick, 1000), window.setInterval(heartbeat, 60000));
-  log("connected; heartbeat every 60 s");
+  timers.push(window.setInterval(tick, 1000), window.setInterval(heartbeat, 20000));
+  log("connected; heartbeat every 20 s");
 }
 
 async function handleCommand(cid: string, c: { type?: string; exp?: number }) {
@@ -184,9 +184,11 @@ document.querySelectorAll<HTMLButtonElement>("[data-act]").forEach((b) => b.addE
       await sendState(true);
       break;
     case "test": await report([{ id: "", at: now, deviceId: id, type: "test" }]); break;
-    case "offline": online = !online; log(online ? "back online" : "offline: no heartbeat or state (the app shows offline after 3 minutes)"); if (online) { await heartbeat(); await sendState(true); } break;
+    case "offline": online = !online; log(online ? "back online" : "offline, like a power cut: no heartbeat or state (the app shows offline within about a minute)"); if (online) { await heartbeat(); await sendState(true); } break;
     case "disconnect":
-      timers.forEach(clearInterval); timers = []; stopCmd?.(); await signOut(auth);
+      timers.forEach(clearInterval); timers = []; stopCmd?.();
+      await remove(ref(db, `hb/${id}`)).catch(() => {}); // planned shutdown: say goodbye, the app shows offline at once
+      await signOut(auth);
       location.reload();
       return;
   }

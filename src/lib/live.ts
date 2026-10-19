@@ -210,7 +210,7 @@ function watchUser(uid: string) {
       setLive({ family: list });
     }),
   );
-  onlineTimer = window.setInterval(publish, 30000); // re-evaluate "offline" from heartbeat age
+  onlineTimer = window.setInterval(publish, 5000); // re-evaluate "offline" from heartbeat age (local, no network)
 }
 
 function watchDevice(id: string, label: Label) {
