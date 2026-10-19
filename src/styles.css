@@ -322,7 +322,8 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .ptop-logo { justify-self: start; display: block; }
 .ptop-logo .logo-img { width: 34px; height: 34px; }
 .ptop-name { font: 800 1.35rem/1 "Inter", var(--font); letter-spacing: -.01em; color: var(--text); }
-.ptop-profile { justify-self: end; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--p-panel); border: 2px solid var(--orange); color: var(--text); font-weight: 800; text-decoration: none; }
+.ptop-actions { justify-self: end; display: flex; align-items: center; gap: 8px; }
+.ptop-profile { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--p-panel); border: 2px solid var(--orange); color: var(--text); font-weight: 800; text-decoration: none; }
 .ptop-profile[aria-current="page"] { background: var(--orange); color: #07192C; }
 .pcontent { padding-bottom: calc(var(--pnav-h) + var(--safe-bottom) + 16px); }
 .pnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(4, 1fr); height: calc(var(--pnav-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom); background: var(--orange); border-radius: 22px 22px 0 0; box-shadow: 0 -6px 24px rgb(7 25 44 / .18); }

@@ -1,9 +1,10 @@
 /**
- * Android app layout: top bar (symbol, name, profile), the screen, and the orange bottom bar
+ * Android app layout: top bar (symbol, name, Day/Night and profile), the screen, and the orange bottom bar
  * (Home, Details, History, About us). The web app uses the shell in App.tsx instead.
  */
 import { AlarmSheet } from "../components/AlarmSheet";
 import { Icon, type IconName } from "../components/Icon";
+import { ThemeToggle } from "../components/QuickSettings";
 import { type Route, href } from "../lib/router";
 import { statusOf } from "../lib/sim";
 import { useApp } from "../lib/store";
@@ -45,14 +46,18 @@ export function PhoneShell({ route }: { route: Route }) {
   return (
     <div className="pshell">
       <header className="ptop">
+        {/* Logo Guidelines v1.0: full-colour symbol by day, reversed at night (CSS shows one from the theme). */}
         <a href="#/" className="ptop-logo" aria-label={t("tabHome")}>
           <img className="logo-img logo-img--light" src={`${BASE}brand/VenGuard_Symbol_FullColour_RGB.svg`} width={34} height={34} alt="" />
           <img className="logo-img logo-img--dark" src={`${BASE}brand/VenGuard_Symbol_Reversed_RGB.svg`} width={34} height={34} alt="" />
         </a>
         <span className="ptop-name" lang="en">VenGuard</span>
-        <a href="#/account" className="ptop-profile" aria-label={t("profile")} aria-current={route.name === "account" ? "page" : undefined}>
-          {initial || <Icon name="user" size={20} />}
-        </a>
+        <span className="ptop-actions">
+          <ThemeToggle />
+          <a href="#/account" className="ptop-profile" aria-label={t("profile")} aria-current={route.name === "account" ? "page" : undefined}>
+            {initial || <Icon name="user" size={20} />}
+          </a>
+        </span>
       </header>
 
       <div className="pcontent" id="content">
