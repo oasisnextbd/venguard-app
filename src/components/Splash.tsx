@@ -26,7 +26,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
   return (
     <div className={leaving ? "splash splash--leaving" : "splash"} aria-hidden="true">
       <img className="splash-logo" src={`${BASE}brand/VenGuard_Logo_Primary_Reversed_RGB.svg`} width={220} height={57} alt="" />
-      <p className="splash-motto">{t("motto")}</p>
+      <p className="splash-motto" lang="en">{t("motto")}</p>
     </div>
   );
 }

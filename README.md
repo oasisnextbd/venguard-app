@@ -88,7 +88,7 @@ vector master when it exists, keeping the names. Only the logo follows that guid
 **Android app vs web app.** Both are built from the same code; anything only for the Android app checks
 `isNative` (`src/lib/platform.ts`) and leaves the web app unchanged. So far: the opening screen
 (`src/components/Splash.tsx`): the reversed logo and the motto ("Detect early, stay safe", text key
-`motto`) on Deep Navy for about 2 seconds at start-up. Android's own start-up screen before it is plain
+`motto`, English in both languages) on Deep Navy for about 2 seconds at start-up. Android's own start-up screen before it is plain
 navy with no icon (`android/app/src/main/res/values/splash.xml`, `values/styles.xml`), so the two read as one.
 
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
