@@ -14,5 +14,12 @@ export const firebaseConfig = {
   appId: "1:879846682462:web:7ae3b1f81bbefcdab0e9cf",
 };
 
+/**
+ * Google's "Web client ID" of this project (Firebase console → Authentication → Sign-in method → Google →
+ * Web SDK configuration). The Android app asks Google for an ID token for it (GoogleSignInPlugin.java).
+ * Not a secret.
+ */
+export const GOOGLE_WEB_CLIENT_ID = "879846682462-uvvrdm4q2rgquhtqor8t0tb497ke20dm.apps.googleusercontent.com";
+
 /** Seconds without a heartbeat before a device counts as offline (devices beat every 60 s). */
 export const OFFLINE_AFTER_S = 180;

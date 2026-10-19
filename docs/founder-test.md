@@ -69,4 +69,5 @@ several phones at once.
   the detector's own buzzer still sounds. Background alarms on the phone are the next step (free relay).
 - **No SMS to family** (paid everywhere in Bangladesh). Family members can install the app and add the
   same device instead.
-- **Google sign-in** works in the web app only for now; on Android use email.
+- **Google sign-in on Android** needs the one-time console step in the README ("Google sign-in in the
+  Android app"). Until then the app says the method is not available yet; use email.

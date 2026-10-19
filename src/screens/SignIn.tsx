@@ -2,7 +2,6 @@ import { type FormEvent, useState } from "react";
 import { Logo } from "../components/Logo";
 import { CornerSettings } from "../components/QuickSettings";
 import type { ErrorKey } from "../lib/live";
-import { isNative } from "../lib/platform";
 import { useT } from "../lib/useT";
 
 const PHONE = /^01[3-9]\d{8}$/;
@@ -14,7 +13,7 @@ type View = "email" | "create" | "forgot" | "phone" | "code";
 /**
  * Sign-in (Firebase Auth). Google and email + password are free on the Spark plan;
  * phone works only with the console's test numbers until an SMS plan is added.
- * Inside the Android app Google is hidden (see live.ts).
+ * Google uses the phone's own account picker inside the Android app (signInGoogle() in live.ts).
  */
 export function SignIn() {
   const { t, n } = useT();
@@ -101,16 +100,10 @@ export function SignIn() {
 
         {emailView && view !== "forgot" && (
           <div className="stretch signin-alt">
-            {isNative ? (
-              <p className="small muted">{t("googleLater")}</p>
-            ) : (
-              <>
-                <button type="button" className="btn btn--google btn--block" onClick={google} disabled={busy}>
-                  <GoogleMark />{t("continueGoogle")}
-                </button>
-                <p className="or"><span>{t("orEmail")}</span></p>
-              </>
-            )}
+            <button type="button" className="btn btn--google btn--block" onClick={google} disabled={busy}>
+              <GoogleMark />{t("continueGoogle")}
+            </button>
+            <p className="or"><span>{t("orEmail")}</span></p>
           </div>
         )}
 

@@ -19,6 +19,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithCredential,
   signInWithPhoneNumber,
   signInWithPopup,
   signOut as fbSignOut,
@@ -37,7 +38,7 @@ import {
   set,
   update,
 } from "firebase/database";
-import { OFFLINE_AFTER_S, firebaseConfig } from "./firebase";
+import { GOOGLE_WEB_CLIENT_ID, OFFLINE_AFTER_S, firebaseConfig } from "./firebase";
 import { isNative } from "./platform";
 import { type AppEvent, type Device, type EventType, type Site, HISTORY, THRESHOLD } from "./sim";
 import { type Contact, clearAlarm, getState, raiseAlarm, setLive } from "./store";
@@ -110,6 +111,24 @@ let verifier: RecaptchaVerifier | null = null;
 
 export async function signInGoogle(): Promise<void> {
   init();
+  if (isNative) {
+    // Android: Google blocks its web sign-in inside apps, so the phone's own account picker gives an
+    // ID token (GoogleSignInPlugin.java) and Firebase signs in with it.
+    const { GoogleSignIn } = await import("./googleNative");
+    let idToken: string;
+    try {
+      ({ idToken } = await GoogleSignIn.signIn({ serverClientId: GOOGLE_WEB_CLIENT_ID }));
+    } catch (e) {
+      const { code = "", message = "" } = e as { code?: string; message?: string };
+      throw {
+        code: code === "CANCELED" ? "auth/popup-closed-by-user"
+          : code === "NO_ACCOUNT" ? "google/no-account"
+          : /28444|developer console|\b10\b/i.test(message) ? "google/app-not-registered" : "google/failed",
+      };
+    }
+    await signInWithCredential(auth, GoogleAuthProvider.credential(idToken));
+    return;
+  }
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   await signInWithPopup(auth, provider);
@@ -152,13 +171,15 @@ export async function signOut() {
 
 export type ErrorKey =
   | "wrongCode" | "tooMany" | "badPhone" | "notAllowed" | "signInFailed"
-  | "wrongPassword" | "emailInUse" | "weakPassword" | "badEmail" | "popupBlocked" | "cancelled";
+  | "wrongPassword" | "emailInUse" | "weakPassword" | "badEmail" | "popupBlocked" | "cancelled" | "noGoogleAccount";
 
 /** Map Firebase errors to translation keys. */
 export function errorKey(e: unknown): ErrorKey {
   const code = (e as { code?: string })?.code || "";
   if (code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) return "cancelled";
   if (code.includes("popup-blocked")) return "popupBlocked";
+  if (code === "google/no-account") return "noGoogleAccount";
+  if (code === "google/app-not-registered") return "notAllowed";
   if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "wrongPassword";
   if (code.includes("email-already-in-use")) return "emailInUse";
   if (code.includes("weak-password")) return "weakPassword";

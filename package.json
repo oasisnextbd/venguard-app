@@ -1,11 +1,11 @@
 {
   "name": "venguard-app",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "VenGuard mobile app — Android (Capacitor) and installable web app",
   "venguard": {
     "_minNative": "Oldest Android shell (APK versionName) the current screens run on. Raise it to this version when a change needs a new APK (new plugin, permission, icon...): older phones then keep their screens until the new APK is installed.",
-    "minNative": "0.3.0"
+    "minNative": "0.4.0"
   },
   "type": "module",
   "scripts": {

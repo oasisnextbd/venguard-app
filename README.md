@@ -150,9 +150,10 @@ data comes only from the Firebase project `venguard-connected` on the free Spark
 
 - Sign-in (`src/screens/SignIn.tsx`; enable each method in Firebase console → Authentication →
   Sign-in method):
-  - **Continue with Google** — web only. Google blocks its sign-in page inside app WebViews, so the
-    Android app hides it until the native Firebase plugin is added (needs `google-services.json` and
-    the APK's SHA-1 in the Firebase console).
+  - **Continue with Google** — web and Android. Google blocks its sign-in page inside apps, so the
+    Android app uses the phone's own account picker (`GoogleSignInPlugin.java`, Credential Manager) and
+    signs in to Firebase with the ID token it returns (`signInGoogle()` in `live.ts`). See "Google
+    sign-in in the Android app" below for the one-time console step.
   - **Email + password** — web and Android, with "Forgot password?" (Firebase sends the reset email).
   - **Phone number** — only the test numbers set in the console during the pilot (real SMS needs a
     paid plan; on Android also the native plugin).
@@ -185,6 +186,23 @@ reports state and heartbeat, posts events, and obeys `close` commands (acts, ack
 command). It reuses `src/lib/sim.ts`, like the team dashboard's emulators. Buttons: start a
 leak, turn the regulator off, lift the reset lever, low battery, test button, go offline.
 Register a test device first (see the website repo: `tools/provision-spark.mjs` and the setup guide).
+
+## Google sign-in in the Android app
+
+The account picker works only for an app Google knows: package name plus the SHA-1 fingerprint of the
+key the APK is signed with. Once, as the company account in the Firebase console → project
+**venguard-connected** → Project settings → General → **Add app** → Android:
+
+- Android package name: `com.oasisnext.venguard`
+- Debug signing certificate SHA-1 (the shared key in `android/app/debug.keystore`, which CI uses):
+  `BE:F1:A2:17:7F:9F:7F:C7:FA:14:9A:AE:15:C8:D5:F6:64:FA:F8:8D`
+- Register app. Skip the `google-services.json` download and the SDK steps; this app does not use them.
+
+When the APK is signed with a release key (below), add that key's SHA-1 to the same Android app
+(Project settings → the Android app → Add fingerprint). Until a fingerprint matches, the app says this
+sign-in method is not available yet. The app asks Google for a token for the project's **Web client
+ID** (`GOOGLE_WEB_CLIENT_ID` in `src/lib/firebase.ts`, from Authentication → Sign-in method → Google →
+Web SDK configuration).
 
 ## Android release signing (for Google Play)
 
