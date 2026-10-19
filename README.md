@@ -96,13 +96,17 @@ vector master when it exists, keeping the names. Only the logo follows that guid
 navy with no icon (`android/app/src/main/res/values/splash.xml`, `values/styles.xml`), so the two read as one.
 
 The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` in `src/lib/platform.ts`):
+- **Real accounts only: no demo and no made-up devices.** It opens straight to sign-in (email and
+  password; phone test numbers), and shows only the devices on that account (`load()` in `store.ts`).
+  The web app keeps its demo for website visitors. For testing, the founders use the **Emulators** in
+  the team dashboard: test devices that behave like real ones (website repo, `team-dashboard/README.md`).
 - Top bar: VenGuard symbol (left), the name (middle), profile button (right, opens Account).
 - Bottom bar in VenGuard Orange with navy icons: Home, History, About us. Family moved into Account.
 - Home: one panel per device with its place and one reading (its status); the border is the status
   colour (green = no gas leak). One device fills the screen, up to four fit (two by two), more scroll.
-- Demo: five places (`PHONE_SITES`, `seedPhoneDevices()` in `src/lib/demo.ts`); **Edit** removes a device
-  and **+** adds it back (`actions.removeDevice` / `restoreDevice`). In live mode + adds a real device;
-  removing a real device needs a backend change first and is not offered yet.
+- **+** adds a device with the ID and code on its sticker (`screens/AddDevice.tsx`); **Edit** removes one
+  from the account (`unclaimDevice` in `live.ts`: deletes only this account's ownership; the device keeps
+  working and can be added again).
 - Device screen (tap a panel): header with the photo and place; a gas bar with the alarm level, LFL and
   HFL marked, green → yellow at the alarm → deeper red towards the LFL (never orange; `barPosition`,
   `gasColour` in `sim.ts`, tested). LPG limits `LPG_LFL_VOL` / `LPG_HFL_VOL` are typical figures: CTO to
@@ -112,12 +116,13 @@ The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` 
   device's screen opens so its gas bar can be watched going down, and a banner gives the safety advice
   (Mute, Call family). Sound and vibration repeat until the air is clear. Then the app returns to its
   colours and shows "Gas is mitigated", also as a phone notification (`clearAlarm` in
-  `store.ts`, for demo and live devices). The web app keeps its full-screen alarm.
-- History: a timeline of every device's events; each card names the place and device. The demo seeds a
-  week of made-up history (`seedPhoneEvents()`).
+  `store.ts`). The web app keeps its full-screen alarm.
+- History: a timeline of every device's events; each card names the place and device
+  (`src/lib/place.ts` writes "Home · Kitchen" for demo places and just "Home" for a real device).
 - About us: what VenGuard does, vision, recognition (BUET BRTC testing says "in progress" until the
   report is in), contact, and a link to the OASIS website.
-- See it in a browser while developing: `npm run dev`, then open `http://localhost:5173/?phone`.
+- See it in a browser while developing: `npm run dev`, then open `http://localhost:5173/?phone`
+  (add `VITE_FIREBASE_EMULATORS=1` to use the local Firebase emulators).
 
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
 icon and a word, not colour alone. No placeholder prices or contact details.
