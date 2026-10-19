@@ -111,7 +111,7 @@ const dict = {
   seeKitchen: { bn: "রান্নাঘর দেখুন", en: "See the kitchen" },
   mute: { bn: "শব্দ বন্ধ", en: "Mute" },
   notifTitle: { bn: "VenGuard: গ্যাস লিক", en: "VenGuard: gas leak" },
-  mitigatedTitle: { bn: "আপনার গ্যাস লিক নিয়ন্ত্রণে এসেছে", en: "Your gas leak is mitigated" },
+  mitigatedTitle: { bn: "গ্যাস নিয়ন্ত্রণে এসেছে", en: "Gas is mitigated" },
   mitigatedBody: { bn: "{place}: গ্যাসের মাত্রা আবার স্বাভাবিক।", en: "{place}: the gas level is back to normal." },
 
   // Family
