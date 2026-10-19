@@ -2,7 +2,7 @@ import { type FormEvent, useState } from "react";
 import { Logo } from "../components/Logo";
 import { CornerSettings } from "../components/QuickSettings";
 import type { ErrorKey } from "../lib/live";
-import { isNative } from "../lib/platform";
+import { isNative, phoneUI } from "../lib/platform";
 import { actions } from "../lib/store";
 import { useT } from "../lib/useT";
 
@@ -165,7 +165,7 @@ export function SignIn() {
         {emailView
           ? <button type="button" className="link-btn" onClick={() => go("phone")}>{t("usePhone")}</button>
           : <button type="button" className="link-btn" onClick={() => go("email")}>{t("useEmail")}</button>}
-        <button type="button" className="link-btn" onClick={actions.switchToDemo}>{t("switchDemo")}</button>
+        {!phoneUI && <button type="button" className="link-btn" onClick={actions.switchToDemo}>{t("switchDemo")}</button>}
       </div>
     </main>
   );

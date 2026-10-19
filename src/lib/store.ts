@@ -6,9 +6,10 @@
  *   live — the VenGuard Firebase backend (live.ts), which pushes updates through setLive().
  */
 import { useSyncExternalStore } from "react";
-import { DEMO_DEVICE, PHONE_SITES, SITES, seedDevices, seedPhoneDevices, seedPhoneEvents } from "./demo";
+import { DEMO_DEVICE, SITES, seedDevices } from "./demo";
 import type { Lang } from "./i18n";
 import { translate } from "./i18n";
+import { placeName } from "./place";
 import { notify, phoneUI, startAlarmSound, startAlarmVibration, stopAlarmSound, vibrate } from "./platform";
 import {
   type AppEvent,
@@ -44,25 +45,27 @@ export interface State {
   devices: Record<string, Device>;
   events: AppEvent[]; // newest first
   alarmFor: string | null; // device id of the open alarm sheet
-  removed: Device[]; // demo: devices taken off the home screen, which can be added back
   mitigated: string | null; // phone layout: device whose leak has just cleared (green message)
 }
 
 const KEY = "vg_app_v1";
 
-/** Demo data: the phone layout has five places with one device each; the web app keeps its own set. */
-const demoSites = () => (phoneUI ? PHONE_SITES : SITES);
-const demoDevices = () => (phoneUI ? seedPhoneDevices() : seedDevices());
-const demoEvents = () => (phoneUI ? seedPhoneEvents() : []);
+/** Demo data (web app only: the Android app has no demo, see load()). */
+const demoSites = () => SITES;
+const demoDevices = () => seedDevices();
+const demoEvents = (): AppEvent[] => [];
 const MAX_EVENTS = 100;
 
 function load(): Pick<State, "started" | "mode" | "lang" | "theme" | "sound" | "family"> {
   const fallback = { started: false, mode: "demo" as Mode, lang: "bn" as Lang, theme: "auto" as ThemePref, sound: true, family: [] as Contact[] };
+  let saved = fallback;
   try {
-    return { ...fallback, ...JSON.parse(localStorage.getItem(KEY) || "{}") };
+    saved = { ...fallback, ...JSON.parse(localStorage.getItem(KEY) || "{}") };
   } catch {
-    return fallback;
+    /* keep the defaults */
   }
+  // The Android app is for real VenGuard accounts only: no demo devices, straight to sign-in.
+  return phoneUI ? { ...saved, started: true, mode: "live" } : saved;
 }
 
 const saved = load();
@@ -74,7 +77,6 @@ let state: State = {
   devices: saved.mode === "demo" ? demoDevices() : {},
   events: saved.mode === "demo" ? demoEvents() : [],
   alarmFor: null,
-  removed: [],
   mitigated: null,
 };
 
@@ -96,7 +98,7 @@ function set(patch: Partial<State>) {
 }
 
 function apply(id: string, fn: (d: Device, now: number) => { device: Device; events: AppEvent[] } | Device) {
-  if (!state.devices[id]) return; // e.g. removed from the demo
+  if (!state.devices[id]) return; // e.g. removed meanwhile
   const now = Date.now();
   const r = fn(state.devices[id], now);
   const res = "device" in r ? r : { device: r, events: [] };
@@ -111,8 +113,7 @@ export function setLive(patch: Partial<State>) {
 function placeOf(deviceId: string): string {
   const d = state.devices[deviceId];
   if (!d) return "";
-  const site = state.sites.find((s) => s.id === d.siteId);
-  return site ? `${site.name[state.lang]} · ${d.name[state.lang]}` : d.name[state.lang];
+  return placeName(d, state.sites.find((s) => s.id === d.siteId), state.lang);
 }
 
 export function raiseAlarm(deviceId: string) {
@@ -170,22 +171,25 @@ export function startLive() {
 export const actions = {
   /** Back to the welcome screen (demo or sign-in). Keeps a live sign-in: "Sign in" then goes straight home. */
   showWelcome: () => {
+    if (phoneUI) return;
     stopAlarmSound();
     set({ started: false, alarmFor: null });
   },
-  start: () => set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [] }),
+  start: () => { if (!phoneUI) set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents() }); },
   startLive: () => {
-    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, removed: [], mitigated: null });
+    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, mitigated: null });
     startLive();
   },
   switchToDemo: () => {
+    if (phoneUI) return;
     stopAlarmSound();
-    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null, mitigated: null });
+    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), alarmFor: null, mitigated: null });
   },
   signOut: () => {
     stopAlarmSound();
     void live().then((m) => m.signOut());
-    set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null, mitigated: null });
+    if (phoneUI) set({ auth: null, sites: [], devices: {}, events: [], alarmFor: null, mitigated: null });
+    else set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: demoEvents(), alarmFor: null, mitigated: null });
   },
   setLang: (lang: Lang) => set({ lang }),
   setTheme: (theme: ThemePref) => set({ theme }),
@@ -214,27 +218,21 @@ export const actions = {
   },
   mute: () => stopAlarmSound(),
   dismissMitigated: () => set({ mitigated: null }),
-  /** Demo: take a device off the home screen (its events go too). Real devices are not removed from here yet. */
-  removeDevice: (id: string) => {
-    if (state.mode !== "demo" || !state.devices[id]) return;
-    const { [id]: gone, ...devices } = state.devices;
-    if (state.alarmFor === id) stopAlarmSound();
-    set({
-      devices,
-      removed: [...state.removed, gone],
-      events: state.events.filter((e) => e.deviceId !== id),
-      alarmFor: state.alarmFor === id ? null : state.alarmFor,
-    });
-  },
-  /** Demo: put a removed device back, at the end of the list. */
-  restoreDevice: (id: string) => {
-    const d = state.removed.find((x) => x.id === id);
-    if (!d) return;
-    set({ devices: { ...state.devices, [id]: d }, removed: state.removed.filter((x) => x.id !== id) });
+  /**
+   * Remove a device from this account (live): it disappears from Home and History. The device itself
+   * keeps working; it can be added again with its ID and sticker code.
+   */
+  removeDevice: async (id: string): Promise<void> => {
+    if (state.mode !== "live" || !state.devices[id]) return;
+    if (state.alarmFor === id) {
+      stopAlarmSound();
+      set({ alarmFor: null });
+    }
+    await (await live()).unclaimDevice(id);
   },
   restartDemo: () => {
     stopAlarmSound();
-    set({ devices: demoDevices(), events: demoEvents(), alarmFor: null, removed: [], mitigated: null });
+    set({ devices: demoDevices(), events: demoEvents(), alarmFor: null, mitigated: null });
   },
 };
 

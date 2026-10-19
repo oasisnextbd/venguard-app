@@ -5,6 +5,7 @@
 import { EVENT_ICON } from "../components/EventList";
 import { Icon } from "../components/Icon";
 import { clock } from "../lib/i18n";
+import { placeName } from "../lib/place";
 import type { EventType } from "../lib/sim";
 import { useApp } from "../lib/store";
 import { useT } from "../lib/useT";
@@ -47,7 +48,7 @@ export function History() {
             {events.map((e) => {
               const d = devices[e.deviceId];
               const s = d && sites.find((x) => x.id === d.siteId);
-              const place = d ? (s ? `${s.name[lang]} · ${d.name[lang]}` : d.name[lang]) : e.deviceId;
+              const place = d ? placeName(d, s, lang) : e.deviceId;
               return (
                 <li key={e.id} className={`phist-item phist-item--${TONE[e.type]}`}>
                   <span className="phist-dot" aria-hidden="true" />

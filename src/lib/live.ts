@@ -283,6 +283,13 @@ export async function claimDevice(id: string, code: string, label: Label): Promi
   });
 }
 
+/** Remove a device from this account (the rules let people delete only their own ownership). */
+export async function unclaimDevice(id: string): Promise<void> {
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("auth/not-signed-in");
+  await update(ref(db), { [`users/${uid}/devices/${id}`]: null, [`devices/${id}/owners/${uid}`]: null });
+}
+
 /** Ask the device to close its valve. The rules accept only "close", expiring within 30 minutes. */
 export async function sendClose(id: string): Promise<void> {
   const uid = auth.currentUser?.uid;

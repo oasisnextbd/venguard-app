@@ -7,6 +7,7 @@
 import { EventList } from "../components/EventList";
 import { Icon } from "../components/Icon";
 import { StatusPill, longKey } from "../components/Status";
+import { placeDetail } from "../lib/place";
 import {
   BAR_HFL,
   BAR_LFL,
@@ -44,7 +45,7 @@ export function PhoneDevice({ id }: { id: string }) {
           <img className="pdev-photo" src={`${BASE}${PHOTO.detector}`} width={108} height={108} alt="" />
           <div className="pdev-title">
             <h1>{site ? site.name[lang] : d.name[lang]}</h1>
-            <p>{d.name[lang]}{site ? ` · ${site.area[lang]}` : ""}</p>
+            {placeDetail(d, site, lang) && <p>{placeDetail(d, site, lang)}</p>}
             <p className="pdev-kit">{t(d.kit === "complete" ? "kitComplete" : "kitDetectorRelay")}</p>
             <StatusPill status={status} />
           </div>

@@ -6,6 +6,7 @@
  */
 import { useEffect } from "react";
 import { Icon } from "../components/Icon";
+import { placeName } from "../lib/place";
 import { actions, useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 
@@ -14,8 +15,7 @@ function usePlace(id: string | null): string {
   const { lang } = useT();
   const d = id ? devices[id] : undefined;
   if (!d) return "";
-  const s = sites.find((x) => x.id === d.siteId);
-  return s ? `${s.name[lang]} · ${d.name[lang]}` : d.name[lang];
+  return placeName(d, sites.find((x) => x.id === d.siteId), lang);
 }
 
 export function LeakBanner({ id }: { id: string }) {

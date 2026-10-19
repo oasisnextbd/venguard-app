@@ -70,7 +70,7 @@ export function Account() {
             <button type="button" className="list-link" onClick={actions.startLive}><Icon name="user" />{t("signInReal")}<Icon name="chevron" size={18} /></button>
           </>
         ) : (
-          <button type="button" className="list-link" onClick={actions.switchToDemo}><Icon name="play" />{t("switchDemo")}<Icon name="chevron" size={18} /></button>
+          !phoneUI && <button type="button" className="list-link" onClick={actions.switchToDemo}><Icon name="play" />{t("switchDemo")}<Icon name="chevron" size={18} /></button>
         )}
       </section>
 
