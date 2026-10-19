@@ -138,7 +138,7 @@ Installed apps update their screens by themselves; nobody reinstalls the APK for
   install the new APK.
 - The web app updates through its service worker as before.
 
-Team dashboard notice and minimum version: `src/lib/appSettings.ts` reads Firestore `settings/app`
+Team dashboard notice (English only, shown in both app languages) and minimum version: `src/lib/appSettings.ts` reads Firestore `settings/app`
 (public read) over HTTPS; `src/phone/Notices.tsx` shows them under the top bar.
 
 Founders' test plan: [`docs/founder-test.md`](docs/founder-test.md).

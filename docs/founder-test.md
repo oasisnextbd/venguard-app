@@ -72,7 +72,7 @@ VG-TEST03 is a detector + relay kit (no valve): repeat 3.2 and check it tells yo
 
 | # | In the dashboard (Settings → VenGuard app) | In the app |
 |---|---|---|
-| 4.1 | Write a notice in both languages → Save | Under the top bar within 10 minutes, or at once after reopening the app; ✕ closes it |
+| 4.1 | Write a notice (English) → Save | Under the top bar within 10 minutes, or at once after reopening the app; ✕ closes it |
 | 4.2 | Change the notice | It shows again |
 | 4.3 | Minimum version **9.9.9** → Save (test only) | "Please install the new version" with Download; the app still works |
 | 4.4 | Empty the minimum version and the notice | Both go away |

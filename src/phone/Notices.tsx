@@ -1,6 +1,6 @@
 /**
  * Android app: messages set in the team dashboard (Settings → VenGuard app), shown under the top bar.
- * - The notice (Bangla/English): can be closed; a new or changed notice shows again.
+ * - The notice (English, also in the Bangla app): can be closed; a new or changed notice shows again.
  * - "Install the new version": when this APK is older than the minimum version set there. It never
  *   blocks the app: alarms and live status keep working on the old version.
  */
@@ -30,7 +30,7 @@ function readClosed(): string {
 }
 
 export function Notices() {
-  const { t, lang } = useT();
+  const { t } = useT();
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [native, setNative] = useState("");
   const [closed, setClosed] = useState(readClosed);
@@ -48,8 +48,8 @@ export function Notices() {
   }, []);
 
   if (!settings) return null;
-  const notice = (lang === "bn" ? settings.notice_bn || settings.notice_en : settings.notice_en || settings.notice_bn);
-  const key = `${settings.notice_bn}|${settings.notice_en}`;
+  const notice = settings.notice_en;
+  const key = notice;
   const showNotice = !!notice && closed !== key;
   const showUpdate = !updateClosed && !!native && needsNewApk(native, settings.min_version);
   if (!showNotice && !showUpdate) return null;
@@ -72,7 +72,7 @@ export function Notices() {
       {showNotice && (
         <div className="pnotice" role="status">
           <Icon name="info" size={20} />
-          <span className="pnotice-text">{notice}</span>
+          <span className="pnotice-text" lang="en">{notice}</span>
           <button type="button" className="pnotice-x" onClick={close} aria-label={t("close")}><Icon name="x" size={18} /></button>
         </div>
       )}
