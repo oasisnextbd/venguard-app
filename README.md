@@ -68,7 +68,7 @@ src/
   screens/              Home, Device, Site (building), Alerts, Family, Account, Welcome
   components/           Logo, Icon, StatusPill, charts, event list, alarm sheet, Splash
   phone/                Android app layout: PhoneShell (top and bottom bars), PhoneHome, PhoneDevice,
-                        Details, History, About
+                        History, About
   lib/company.ts        company facts for Account and About us (copied from the website's site.json)
 public/devices/         photos of the detector, valve and relay (prototype photo from the founders)
   styles.css            brand tokens, Day/Night themes, all styles
@@ -97,7 +97,7 @@ navy with no icon (`android/app/src/main/res/values/splash.xml`, `values/styles.
 
 The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` in `src/lib/platform.ts`):
 - Top bar: VenGuard symbol (left), the name (middle), profile button (right, opens Account).
-- Bottom bar in VenGuard Orange with navy icons: Home, Details, History, About us. Family moved into Account.
+- Bottom bar in VenGuard Orange with navy icons: Home, History, About us. Family moved into Account.
 - Home: one panel per device with its place and one reading (its status); the border is the status
   colour (green = no gas leak). One device fills the screen, up to four fit (two by two), more scroll.
 - Demo: five places (`PHONE_SITES`, `seedPhoneDevices()` in `src/lib/demo.ts`); **Edit** removes a device

@@ -314,7 +314,7 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .splash-motto { margin: 0; color: rgba(255, 255, 255, .72); font-size: 1.2rem; font-weight: 400; letter-spacing: .01em; }
 @keyframes splash-in { from { opacity: 0; transform: translateY(6px); } }
 
-/* 17 · Phone layout (Android app only, src/phone/): top bar, orange bottom bar, device panels.
+/* 17 · Phone layout (Android app only, src/phone/): top bar, orange bottom bar (3 items), device panels.
    The bottom bar has its own palette: VenGuard Orange with navy icons (5:1 contrast), the same in Day and Night. */
 .pshell { --ptop-h: 60px; --pnav-h: 70px; --p-panel: var(--sand); min-height: 100vh; min-height: 100dvh; background: var(--bg); }
 :root[data-theme="dark"] .pshell { --p-panel: #10294A; }
@@ -326,7 +326,7 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .ptop-profile { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--p-panel); border: 2px solid var(--orange); color: var(--text); font-weight: 800; text-decoration: none; }
 .ptop-profile[aria-current="page"] { background: var(--orange); color: #07192C; }
 .pcontent { padding-bottom: calc(var(--pnav-h) + var(--safe-bottom) + 16px); }
-.pnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(4, 1fr); height: calc(var(--pnav-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom); background: var(--orange); border-radius: 22px 22px 0 0; box-shadow: 0 -6px 24px rgb(7 25 44 / .18); }
+.pnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(3, 1fr); height: calc(var(--pnav-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom); background: var(--orange); border-radius: 22px 22px 0 0; box-shadow: 0 -6px 24px rgb(7 25 44 / .18); }
 .pnav a { display: grid; place-items: center; align-content: center; gap: 3px; color: #07192C; text-decoration: none; font-size: .76rem; font-weight: 600; }
 html[lang="bn"] .pnav a { font-size: .8rem; }
 .pnav a[aria-current="page"] { font-weight: 800; }

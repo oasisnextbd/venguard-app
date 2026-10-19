@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-/** Tiny hash router: #/, #/device/<id>, #/site/<id>, #/alerts, #/family, #/account, #/add; phone layout also #/details, #/about. */
+/** Tiny hash router: #/, #/device/<id>, #/site/<id>, #/alerts, #/family, #/account, #/add; phone layout also #/about. */
 export type Route =
   | { name: "home" }
   | { name: "device"; id: string }
@@ -9,14 +9,13 @@ export type Route =
   | { name: "family" }
   | { name: "account" }
   | { name: "add" }
-  | { name: "details" }
   | { name: "about" };
 
 export function parse(hash: string): Route {
   const [, a, b] = hash.replace(/^#/, "").split("/");
   if (a === "device" && b) return { name: "device", id: decodeURIComponent(b) };
   if (a === "site" && b) return { name: "site", id: decodeURIComponent(b) };
-  if (a === "alerts" || a === "family" || a === "account" || a === "add" || a === "details" || a === "about") return { name: a };
+  if (a === "alerts" || a === "family" || a === "account" || a === "add" || a === "about") return { name: a };
   return { name: "home" };
 }
 

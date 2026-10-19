@@ -1,6 +1,6 @@
 /**
  * Android app layout: top bar (symbol, name, Day/Night and profile), the screen, and the orange bottom bar
- * (Home, Details, History, About us). The web app uses the shell in App.tsx instead.
+ * (Home, History, About us). The web app uses the shell in App.tsx instead.
  */
 import { AlarmSheet } from "../components/AlarmSheet";
 import { Icon, type IconName } from "../components/Icon";
@@ -14,17 +14,15 @@ import { AddDevice } from "../screens/AddDevice";
 import { Family } from "../screens/Family";
 import { SiteScreen } from "../screens/Site";
 import { About } from "./About";
-import { Details } from "./Details";
 import { History } from "./History";
 import { PhoneDevice } from "./PhoneDevice";
 import { PhoneHome } from "./PhoneHome";
 
 const BASE = import.meta.env.BASE_URL;
 
-type Tab = "home" | "details" | "alerts" | "about";
-const TABS: { tab: Tab; icon: IconName; label: "tabHome" | "tabDetails" | "tabHistory" | "tabAbout" }[] = [
+type Tab = "home" | "alerts" | "about";
+const TABS: { tab: Tab; icon: IconName; label: "tabHome" | "tabHistory" | "tabAbout" }[] = [
   { tab: "home", icon: "home", label: "tabHome" },
-  { tab: "details", icon: "activity", label: "tabDetails" },
   { tab: "alerts", icon: "history", label: "tabHistory" },
   { tab: "about", icon: "info", label: "tabAbout" },
 ];
@@ -32,7 +30,7 @@ const TABS: { tab: Tab; icon: IconName; label: "tabHome" | "tabDetails" | "tabHi
 /** Which bottom-bar item a screen belongs to (none for Profile and Family). */
 function tabOf(r: Route): Tab | null {
   if (r.name === "device" || r.name === "site" || r.name === "add") return "home";
-  if (r.name === "home" || r.name === "details" || r.name === "alerts" || r.name === "about") return r.name;
+  if (r.name === "home" || r.name === "alerts" || r.name === "about") return r.name;
   return null;
 }
 
@@ -62,7 +60,6 @@ export function PhoneShell({ route }: { route: Route }) {
 
       <div className="pcontent" id="content">
         {route.name === "home" && <PhoneHome />}
-        {route.name === "details" && <Details />}
         {route.name === "alerts" && <History />}
         {route.name === "about" && <About />}
         {route.name === "device" && <PhoneDevice id={route.id} />}

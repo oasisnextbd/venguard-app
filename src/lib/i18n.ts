@@ -214,8 +214,7 @@ const dict = {
   ev_battery_low: { bn: "ব্যাটারি কম", en: "Battery low" },
   ev_tamper: { bn: "যন্ত্রে হাত দেওয়া হয়েছে", en: "Device tampered with" },
 
-  // Phone layout (Android app): bars, home panels, details, about
-  tabDetails: { bn: "বিস্তারিত", en: "Details" },
+  // Phone layout (Android app): bars, home panels, about
   tabHistory: { bn: "ইতিহাস", en: "History" },
   tabAbout: { bn: "আমাদের কথা", en: "About us" },
   profile: { bn: "প্রোফাইল", en: "Profile" },
@@ -235,7 +234,6 @@ const dict = {
   sh_gas_off: { bn: "ভালভ বন্ধ আছে", en: "Valve is closed" },
   sh_offline: { bn: "যন্ত্র অনলাইনে নেই", en: "Device not online" },
   sh_battery: { bn: "শিগগিরই ব্যাটারি বদলান", en: "Replace the battery soon" },
-  detailsLead: { bn: "প্রতিটি যন্ত্রের লাইভ রিডিং। আরও দেখতে যেকোনোটিতে চাপুন।", en: "Live readings from each device. Tap one to see more." },
   aboutVision: { bn: "আমাদের লক্ষ্য", en: "Our vision" },
   vision: { bn: "বিপদের আগেই জীবন রক্ষা: নিরাপদ রান্নাঘর, টেকসই অবকাঠামো ও দায়িত্বশীল উৎপাদন, বাংলাদেশ থেকে বিশ্বে।", en: "Protecting lives before danger strikes: safer kitchens, resilient infrastructure and responsible production, from Bangladesh to the world." },
   aboutRecognition: { bn: "স্বীকৃতি", en: "Recognition" },
