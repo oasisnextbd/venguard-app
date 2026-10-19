@@ -219,7 +219,7 @@ const dict = {
   tabHistory: { bn: "ইতিহাস", en: "History" },
   tabAbout: { bn: "আমাদের কথা", en: "About us" },
   profile: { bn: "প্রোফাইল", en: "Profile" },
-  myDevices: { bn: "আমার যন্ত্র", en: "My devices" },
+  myDevices: { bn: "আমার ডিভাইস সমূহ", en: "My devices" },
   edit: { bn: "সম্পাদনা", en: "Edit" },
   done: { bn: "শেষ", en: "Done" },
   cancel: { bn: "বাতিল", en: "Cancel" },
