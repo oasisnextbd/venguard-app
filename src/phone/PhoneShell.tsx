@@ -19,6 +19,7 @@ import { SiteScreen } from "../screens/Site";
 import { About } from "./About";
 import { History } from "./History";
 import { LeakBanner, MitigatedMessage } from "./LeakAlert";
+import { Notices } from "./Notices";
 import { PhoneDevice } from "./PhoneDevice";
 import { PhoneHome } from "./PhoneHome";
 
@@ -67,6 +68,7 @@ export function PhoneShell({ route }: { route: Route }) {
         </span>
       </header>
 
+      <Notices />
       <div className="pcontent" id="content">
         {leak && !(route.name === "device" && route.id === leak) && <LeakBanner id={leak} />}
         {route.name === "home" && <PhoneHome />}

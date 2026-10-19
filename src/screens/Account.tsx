@@ -74,7 +74,7 @@ export function Account() {
         )}
       </section>
 
-      <p className="small muted center">{mode === "demo" && <>{t("demoNote")}<br /></>}{t("version")} {n(__APP_VERSION__)}</p>
+      <p className="small muted center">{mode === "demo" && <>{t("demoNote")}<br /></>}{t("version")} {n(__APP_VERSION__)}{__APP_BUILD__ ? ` (${n(__APP_BUILD__)})` : ""}</p>
     </main>
   );
 }

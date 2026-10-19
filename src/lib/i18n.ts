@@ -112,6 +112,9 @@ const dict = {
   mute: { bn: "শব্দ বন্ধ", en: "Mute" },
   notifTitle: { bn: "VenGuard: গ্যাস লিক", en: "VenGuard: gas leak" },
   mitigatedTitle: { bn: "গ্যাস নিয়ন্ত্রণে এসেছে", en: "Gas is mitigated" },
+  updateNeeded: { bn: "অ্যাপের নতুন সংস্করণ ইনস্টল করুন", en: "Please install the new version of the app" },
+  updateNeededSub: { bn: "ডাউনলোড করে খুলুন, তারপর আপডেট চাপুন। আপনার সেটিংস থেকে যাবে।", en: "Download it, open it and tap Update. Your settings stay." },
+  download: { bn: "ডাউনলোড", en: "Download" },
   mitigatedBody: { bn: "{place}: গ্যাসের মাত্রা আবার স্বাভাবিক।", en: "{place}: the gas level is back to normal." },
 
   // Family

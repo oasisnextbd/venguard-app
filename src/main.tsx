@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { isNative } from "./lib/platform";
 import { actions, getState, startLive, startSimulation } from "./lib/store";
+import { startUpdates } from "./lib/updates";
 import "./styles.css";
 
 /*
@@ -18,6 +19,7 @@ if (entry) {
 }
 
 startSimulation();
+void startUpdates();
 if (getState().started && getState().mode === "live") startLive();
 
 // Offline support for the web version (the Android app ships its files inside the app).

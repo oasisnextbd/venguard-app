@@ -8,7 +8,8 @@ import pkg from "./package.json";
 export default defineConfig({
   base: "./",
   plugins: [react()],
-  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  // __APP_BUILD__: the CI run number (0 locally); in-app updates compare it (src/lib/updates.ts).
+  define: { __APP_VERSION__: JSON.stringify(pkg.version), __APP_BUILD__: String(Number(process.env.GITHUB_RUN_NUMBER) || 0) },
   build: {
     outDir: "dist",
     sourcemap: false,

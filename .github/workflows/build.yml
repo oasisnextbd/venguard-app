@@ -1,7 +1,8 @@
 # Builds, tests and publishes the VenGuard app.
 #   Pull requests: typecheck, unit tests, web build, Android debug build.
 #   main:          the same, then publishes https://oasisnextbd.github.io/venguard-app/
-#                  with the Android app at …/VenGuard.apk
+#                  with the Android app at …/VenGuard.apk and the in-app update at …/updates/
+#                  (latest.json + bundle zip; installed apps fetch it, see src/lib/updates.ts)
 #   Tags v*:       also attaches the APK to a GitHub Release.
 name: Build and publish app
 
@@ -36,6 +37,14 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+      # In-app update: the same web build as a zip, made before the APK and before anything else
+      # lands in dist/. Published in the last step, after the APK is built.
+      - name: Package the in-app update
+        run: |
+          cd dist && zip -qr "$RUNNER_TEMP/bundle.zip" . && cd ..
+          # The updater (6.x) checks a CRC32 of the zip; the download itself is HTTPS from this site.
+          echo "BUNDLE_CHECKSUM=$(python3 -c "import sys, zlib; print('%08x' % (zlib.crc32(open(sys.argv[1], 'rb').read()) & 0xffffffff))" "$RUNNER_TEMP/bundle.zip")" >> "$GITHUB_ENV"
 
       - uses: actions/setup-java@v4
         with:
@@ -75,6 +84,18 @@ jobs:
         with:
           name: VenGuard-apk
           path: dist/VenGuard.apk
+
+      - name: Add the in-app update to the site
+        run: |
+          mkdir -p dist/updates
+          mv "$RUNNER_TEMP/bundle.zip" "dist/updates/bundle-${GITHUB_RUN_NUMBER}.zip"
+          node -e '
+            const pkg = require("./package.json");
+            const n = Number(process.env.GITHUB_RUN_NUMBER);
+            const m = { version: pkg.version, build: n, minNative: pkg.venguard.minNative, checksum: process.env.BUNDLE_CHECKSUM,
+              url: `https://oasisnextbd.github.io/venguard-app/updates/bundle-${n}.zip` };
+            require("fs").writeFileSync("dist/updates/latest.json", JSON.stringify(m, null, 2));
+            console.log(m);'
 
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'

@@ -343,7 +343,7 @@ html[lang="bn"] .pnav a { font-size: .8rem; }
 .pnav a:focus-visible { outline-color: #07192C; }
 
 /* Home: the panels fill the space between the bars; two rows fit on screen, more scroll */
-.phome { display: flex; flex-direction: column; height: calc(100vh - var(--ptop-h) - var(--pnav-h) - var(--safe-top) - var(--safe-bottom)); height: calc(100dvh - var(--ptop-h) - var(--pnav-h) - var(--safe-top) - var(--safe-bottom)); padding: 4px 16px 14px; }
+.phome { display: flex; flex-direction: column; height: calc(100vh - var(--ptop-h) - var(--pnav-h) - var(--safe-top) - var(--safe-bottom) - var(--pnotices-h, 0px)); height: calc(100dvh - var(--ptop-h) - var(--pnav-h) - var(--safe-top) - var(--safe-bottom) - var(--pnotices-h, 0px)); padding: 4px 16px 14px; }
 .phome-head { display: flex; align-items: center; gap: 8px; padding: 4px 0 12px; }
 .phome-head h1 { flex: 1; font-size: 1.3rem; }
 .phome-count { display: inline-grid; place-items: center; min-width: 26px; height: 26px; margin-left: 4px; padding: 0 6px; border-radius: 999px; background: var(--p-panel); border: 1px solid var(--p-panel-line); font-size: .85rem; vertical-align: middle; }
@@ -501,3 +501,13 @@ html[lang="bn"] .dev-word { font-weight: 700; letter-spacing: 0; line-height: 1.
 .mitigated-text { flex: 1; display: grid; line-height: 1.35; }
 .mitigated-text span { color: rgb(255 255 255 / .9); font-size: .92rem; }
 .mitigated-x { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgb(255 255 255 / .15); color: #fff; cursor: pointer; flex: none; }
+
+/* 21 · Phone notices from the team dashboard (src/phone/Notices.tsx) */
+.pnotices { display: grid; gap: 8px; padding: 8px 16px 0; }
+.pnotice { display: flex; align-items: flex-start; gap: 10px; padding: 12px 12px 12px 14px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); color: var(--text); }
+.pnotice > svg { flex: none; margin-top: 2px; color: var(--accent-text); }
+.pnotice--update { border-color: var(--caution); }
+.pnotice--update > svg { color: var(--caution-text); }
+.pnotice-text { flex: 1; display: grid; gap: 4px; justify-items: start; line-height: 1.4; }
+.pnotice-text span { color: var(--text-muted); font-size: .92rem; }
+.pnotice-x { flex: none; display: grid; place-items: center; width: 32px; height: 32px; margin: -4px -4px 0 0; border: 0; border-radius: 50%; background: none; color: var(--text-muted); cursor: pointer; }
