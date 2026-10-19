@@ -122,6 +122,27 @@ The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` 
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
 icon and a word, not colour alone. No placeholder prices or contact details.
 
+## In-app updates (Android)
+
+Installed apps update their screens by themselves; nobody reinstalls the APK for a design or text change.
+- CI zips each web build into `updates/bundle-<build>.zip` and writes `updates/latest.json` (version,
+  build, CRC32 checksum, `minNative`) on GitHub Pages next to `VenGuard.apk`.
+- The app (`src/lib/updates.ts`, plugin `@capgo/capacitor-updater` 6.14.7, MPL-2.0) confirms on start that
+  its screens work (if not, the plugin rolls back), reads `latest.json`, downloads a newer bundle in the
+  background and uses it from the next start. Rules in `src/lib/updatePolicy.ts` (tested): newer build,
+  our own address, installed APK at least `minNative`. No Capgo cloud and no usage reports
+  (`capacitor.config.ts`: `autoUpdate: false`, `statsUrl: ""`).
+- **When a change needs a new APK** (new plugin or permission, icon, splash, Android settings): raise
+  `version` and `venguard.minNative` in `package.json` to the same new version. Older APKs then keep
+  their screens, and the team dashboard's minimum version (Settings → VenGuard app) can ask people to
+  install the new APK.
+- The web app updates through its service worker as before.
+
+Team dashboard notice and minimum version: `src/lib/appSettings.ts` reads Firestore `settings/app`
+(public read) over HTTPS; `src/phone/Notices.tsx` shows them under the top bar.
+
+Founders' test plan: [`docs/founder-test.md`](docs/founder-test.md).
+
 ## Live mode (real devices)
 
 The welcome screen offers **Sign in to my VenGuard** next to the demo. Live mode uses the Firebase
