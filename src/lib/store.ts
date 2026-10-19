@@ -6,7 +6,7 @@
  *   live — the VenGuard Firebase backend (live.ts), which pushes updates through setLive().
  */
 import { useSyncExternalStore } from "react";
-import { DEMO_DEVICE, PHONE_SITES, SITES, seedDevices, seedPhoneDevices } from "./demo";
+import { DEMO_DEVICE, PHONE_SITES, SITES, seedDevices, seedPhoneDevices, seedPhoneEvents } from "./demo";
 import type { Lang } from "./i18n";
 import { translate } from "./i18n";
 import { notify, phoneUI, startAlarmSound, stopAlarmSound, vibrate } from "./platform";
@@ -52,6 +52,7 @@ const KEY = "vg_app_v1";
 /** Demo data: the phone layout has five places with one device each; the web app keeps its own set. */
 const demoSites = () => (phoneUI ? PHONE_SITES : SITES);
 const demoDevices = () => (phoneUI ? seedPhoneDevices() : seedDevices());
+const demoEvents = () => (phoneUI ? seedPhoneEvents() : []);
 const MAX_EVENTS = 100;
 
 function load(): Pick<State, "started" | "mode" | "lang" | "theme" | "sound" | "family"> {
@@ -70,7 +71,7 @@ let state: State = {
   closeReq: {},
   sites: saved.mode === "demo" ? demoSites() : [],
   devices: saved.mode === "demo" ? demoDevices() : {},
-  events: [],
+  events: saved.mode === "demo" ? demoEvents() : [],
   alarmFor: null,
   removed: [],
 };
@@ -150,19 +151,19 @@ export const actions = {
     stopAlarmSound();
     set({ started: false, alarmFor: null });
   },
-  start: () => set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: [], removed: [] }),
+  start: () => set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [] }),
   startLive: () => {
     set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, removed: [] });
     startLive();
   },
   switchToDemo: () => {
     stopAlarmSound();
-    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: [], removed: [], alarmFor: null });
+    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null });
   },
   signOut: () => {
     stopAlarmSound();
     void live().then((m) => m.signOut());
-    set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: [], removed: [], alarmFor: null });
+    set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: demoEvents(), removed: [], alarmFor: null });
   },
   setLang: (lang: Lang) => set({ lang }),
   setTheme: (theme: ThemePref) => set({ theme }),
@@ -210,7 +211,7 @@ export const actions = {
   },
   restartDemo: () => {
     stopAlarmSound();
-    set({ devices: demoDevices(), events: [], alarmFor: null, removed: [] });
+    set({ devices: demoDevices(), events: demoEvents(), alarmFor: null, removed: [] });
   },
 };
 

@@ -4,7 +4,7 @@ import type { AppEvent, EventType } from "../lib/sim";
 import { useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 
-const EVENT_ICON: Record<EventType, IconName> = {
+export const EVENT_ICON: Record<EventType, IconName> = {
   leak_confirmed: "flame",
   valve_closed: "valve",
   fan_on: "fan",

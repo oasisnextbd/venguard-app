@@ -20,6 +20,45 @@ export const CONFIRM_SECONDS = 7;
 export const CLEAR_LEVEL = 5; // % LEL: below this the air counts as clear
 export const BATTERY_LOW = 20; // %
 
+/*
+ * Gas bar on the Android device screen. The detector reports % LEL (100 % LEL = the LFL, the least gas in
+ * air that can burn). LPG's flammable range in air is about 1.8 % to 9.5 % by volume (typical figures for
+ * propane–butane mixes; CTO to confirm the values for the sensor and the gas sold in Bangladesh).
+ * The bar is drawn in two parts so the region where VenGuard acts stays readable: 0 to the LFL fills the
+ * first BAR_LFL of the bar, the LFL to the HFL the part up to BAR_HFL, and anything richer the rest.
+ */
+export const LPG_LFL_VOL = 1.8; // % by volume
+export const LPG_HFL_VOL = 9.5; // % by volume
+export const BAR_LFL = 0.7;
+export const BAR_HFL = 0.92;
+
+/** % LEL → % by volume in air. */
+export function toVolume(lel: number): number {
+  return (lel * LPG_LFL_VOL) / 100;
+}
+
+/** Where a reading sits on the gas bar, 0–1. */
+export function barPosition(lel: number): number {
+  if (lel <= 0) return 0;
+  if (lel <= 100) return (BAR_LFL * lel) / 100;
+  const vol = toVolume(lel);
+  if (vol <= LPG_HFL_VOL) return BAR_LFL + ((BAR_HFL - BAR_LFL) * (vol - LPG_LFL_VOL)) / (LPG_HFL_VOL - LPG_LFL_VOL);
+  return Math.min(1, BAR_HFL + ((1 - BAR_HFL) * (vol - LPG_HFL_VOL)) / LPG_HFL_VOL);
+}
+
+/**
+ * Bar colour: green in clean air, fading to yellow at the alarm threshold; above it red, getting deeper
+ * up to the LFL. It skips orange, which is the brand colour and never a status colour.
+ */
+export function gasColour(lel: number): string {
+  if (lel <= THRESHOLD) {
+    const hue = 145 - (95 * Math.max(0, lel)) / THRESHOLD;
+    return `hsl(${hue.toFixed(0)} 72% 45%)`;
+  }
+  const t = Math.min(1, (lel - THRESHOLD) / (100 - THRESHOLD));
+  return `hsl(354 ${(70 + 12 * t).toFixed(0)}% ${(54 - 16 * t).toFixed(0)}%)`;
+}
+
 export type Kit = "complete" | "detector_relay";
 export type Valve = "open" | "closed" | "none";
 

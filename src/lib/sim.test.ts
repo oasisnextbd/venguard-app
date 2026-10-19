@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  BAR_HFL,
+  BAR_LFL,
   CONFIRM_SECONDS,
+  LPG_HFL_VOL,
+  THRESHOLD,
+  barPosition,
+  gasColour,
+  toVolume,
   type Device,
   canReset,
   manualReset,
@@ -108,5 +115,36 @@ describe("safety chain", () => {
   it("ranks the most urgent status first", () => {
     expect(worst(["safe", "battery", "danger", "offline"])).toBe("danger");
     expect(worst(["safe", "safe"])).toBe("safe");
+  });
+});
+
+describe("gas bar (Android device screen)", () => {
+  it("puts the LFL and HFL at their marks and never leaves the bar", () => {
+    expect(barPosition(0)).toBe(0);
+    expect(barPosition(100)).toBeCloseTo(BAR_LFL);
+    expect(barPosition((LPG_HFL_VOL / toVolume(1)))).toBeCloseTo(BAR_HFL);
+    expect(barPosition(100000)).toBe(1);
+    expect(barPosition(-5)).toBe(0);
+  });
+
+  it("only moves forward as the gas rises", () => {
+    let last = -1;
+    for (let lel = 0; lel <= 1000; lel += 5) {
+      const p = barPosition(lel);
+      expect(p).toBeGreaterThanOrEqual(last);
+      last = p;
+    }
+  });
+
+  it("goes green → yellow at the alarm threshold → red, deepest at the LFL, never orange", () => {
+    expect(gasColour(0)).toBe("hsl(145 72% 45%)");
+    expect(gasColour(THRESHOLD)).toBe("hsl(50 72% 45%)");
+    expect(gasColour(THRESHOLD + 1)).toMatch(/^hsl\(354 /);
+    expect(gasColour(100)).toBe("hsl(354 82% 38%)");
+    expect(gasColour(400)).toBe(gasColour(100));
+    for (let lel = 0; lel <= 200; lel++) {
+      const hue = Number(gasColour(lel).slice(4).split(" ")[0]);
+      expect(hue >= 50 || hue === 354).toBe(true); // no orange hues (roughly 15–45)
+    }
   });
 });

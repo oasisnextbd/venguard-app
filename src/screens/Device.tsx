@@ -7,7 +7,7 @@ import { actions, useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 
 export function DeviceScreen({ id }: { id: string }) {
-  const { devices, sites, events, mode, closeReq } = useApp();
+  const { devices, sites, events, mode } = useApp();
   const { t, n, lang } = useT();
   const d = devices[id];
   // Live mode: just after adding a device its data takes a moment to arrive.
@@ -69,6 +69,28 @@ export function DeviceScreen({ id }: { id: string }) {
         <div className="tile"><span className="reading-label">{t("battery")}</span><strong>{d.battery === null ? "—" : `${n(d.battery)}%`}</strong></div>
       </div>
 
+      <DeviceActions id={id} />
+
+      <section className="panel">
+        <h2 className="panel-title">{t("history")}</h2>
+        {mine.length ? <EventList events={mine} /> : <p className="muted small">{t("noEvents")}</p>}
+      </section>
+    </main>
+  );
+}
+
+/**
+ * What a person can do for one device: close the gas remotely (never open it), the steps to turn gas
+ * back on by hand at the stove, and the demo buttons. Shared by the web and Android device screens.
+ */
+export function DeviceActions({ id }: { id: string }) {
+  const { devices, mode, closeReq } = useApp();
+  const { t } = useT();
+  const d = devices[id];
+  if (!d) return null;
+  const hasValve = d.valve !== "none";
+  return (
+    <>
       {hasValve && d.valve === "open" && (
         <section className="panel">
           {d.online ? (
@@ -112,10 +134,6 @@ export function DeviceScreen({ id }: { id: string }) {
         </div>
       )}
 
-      <section className="panel">
-        <h2 className="panel-title">{t("history")}</h2>
-        {mine.length ? <EventList events={mine} /> : <p className="muted small">{t("noEvents")}</p>}
-      </section>
-    </main>
+    </>
   );
 }

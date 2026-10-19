@@ -67,8 +67,10 @@ src/
   lib/router.ts         hash routes (#/device/<id> …)
   screens/              Home, Device, Site (building), Alerts, Family, Account, Welcome
   components/           Logo, Icon, StatusPill, charts, event list, alarm sheet, Splash
-  phone/                Android app layout: PhoneShell (top and bottom bars), PhoneHome, Details, About
+  phone/                Android app layout: PhoneShell (top and bottom bars), PhoneHome, PhoneDevice,
+                        Details, History, About
   lib/company.ts        company facts for Account and About us (copied from the website's site.json)
+public/devices/         photos of the detector, valve and relay (prototype photo from the founders)
   styles.css            brand tokens, Day/Night themes, all styles
 public/                 icons, fonts (SIL OFL), web app manifest, service worker
 android/                Capacitor Android project (committed; build output is ignored)
@@ -101,6 +103,15 @@ The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` 
 - Demo: five places (`PHONE_SITES`, `seedPhoneDevices()` in `src/lib/demo.ts`); **Edit** removes a device
   and **+** adds it back (`actions.removeDevice` / `restoreDevice`). In live mode + adds a real device;
   removing a real device needs a backend change first and is not offered yet.
+- Device screen (tap a panel): header with the photo and place; a gas bar with the alarm level, LFL and
+  HFL marked, green → yellow at the alarm → deeper red towards the LFL (never orange; `barPosition`,
+  `gasColour` in `sim.ts`, tested). LPG limits `LPG_LFL_VOL` / `LPG_HFL_VOL` are typical figures: CTO to
+  confirm. Then battery and connection, the three parts with their condition, and the same actions as
+  the web (close remotely, never open; reset by hand at the stove).
+- History: a timeline of every device's events; each card names the place and device. The demo seeds a
+  week of made-up history (`seedPhoneEvents()`).
+- About us: what VenGuard does, vision, recognition (BUET BRTC testing says "in progress" until the
+  report is in), contact, and a link to the OASIS website.
 - See it in a browser while developing: `npm run dev`, then open `http://localhost:5173/?phone`.
 
 Status colours are green / ISO yellow / red only, never orange, and every status shows an

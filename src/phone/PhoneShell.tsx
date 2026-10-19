@@ -11,12 +11,12 @@ import { useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 import { Account } from "../screens/Account";
 import { AddDevice } from "../screens/AddDevice";
-import { Alerts } from "../screens/Alerts";
-import { DeviceScreen } from "../screens/Device";
 import { Family } from "../screens/Family";
 import { SiteScreen } from "../screens/Site";
 import { About } from "./About";
 import { Details } from "./Details";
+import { History } from "./History";
+import { PhoneDevice } from "./PhoneDevice";
 import { PhoneHome } from "./PhoneHome";
 
 const BASE = import.meta.env.BASE_URL;
@@ -63,9 +63,9 @@ export function PhoneShell({ route }: { route: Route }) {
       <div className="pcontent" id="content">
         {route.name === "home" && <PhoneHome />}
         {route.name === "details" && <Details />}
-        {route.name === "alerts" && <Alerts title="tabHistory" />}
+        {route.name === "alerts" && <History />}
         {route.name === "about" && <About />}
-        {route.name === "device" && <DeviceScreen id={route.id} />}
+        {route.name === "device" && <PhoneDevice id={route.id} />}
         {route.name === "site" && <SiteScreen id={route.id} />}
         {route.name === "family" && <Family />}
         {route.name === "account" && <Account />}

@@ -1,4 +1,4 @@
-import { HISTORY, type Device, type Site } from "./sim";
+import { type AppEvent, HISTORY, type Device, type Site } from "./sim";
 
 /** Demo sites and devices. Chosen to show every state the app can display. */
 export const SITES: Site[] = [
@@ -72,4 +72,28 @@ export function seedPhoneDevices(): Record<string, Device> {
     device("tower-3B", "tower", `ফ্ল্যাট ${bnNum(3)}B`, "Flat 3B", { online: false }),
   ];
   return Object.fromEntries(list.map((d) => [d.id, d]));
+}
+
+/** Phone demo: a week of made-up history so the History tab has something to show. Newest first. */
+export function seedPhoneEvents(now = Date.now()): AppEvent[] {
+  const DAY = 864e5;
+  const at = (daysAgo: number, h: number, m: number) => {
+    const d = new Date(now - daysAgo * DAY);
+    d.setHours(h, m, 0, 0);
+    return d.getTime();
+  };
+  const ev = (deviceId: string, type: AppEvent["type"], t: number): AppEvent => ({ id: `seed-${deviceId}-${type}-${t}`, at: t, deviceId, type });
+  const list: AppEvent[] = [
+    ev("mother-kitchen", "battery_low", at(1, 9, 5)),
+    ev("restaurant-kitchen", "leak_confirmed", at(2, 20, 14)),
+    ev("restaurant-kitchen", "valve_closed", at(2, 20, 14) + 1000),
+    ev("restaurant-kitchen", "fan_on", at(2, 20, 14) + 2000),
+    ev("restaurant-kitchen", "air_clear", at(2, 20, 19)),
+    ev("restaurant-kitchen", "fan_off", at(2, 20, 19) + 1000),
+    ev("restaurant-kitchen", "reset", at(2, 20, 41)),
+    ev("home-kitchen", "test", at(3, 10, 2)),
+    ev("office-pantry", "remote_close", at(5, 18, 40)),
+    ev("office-pantry", "reset", at(5, 19, 2)),
+  ];
+  return list.sort((a, b) => b.at - a.at);
 }
