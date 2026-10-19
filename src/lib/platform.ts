@@ -9,6 +9,13 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 
 export const isNative = Capacitor.isNativePlatform();
 
+/**
+ * Phone layout (top bar with logo and profile, coloured bottom bar, device panels): the Android app only.
+ * The web app keeps its own layout. While developing, add ?phone to the address to see the phone layout
+ * in a browser (npm run dev only).
+ */
+export const phoneUI = isNative || (import.meta.env.DEV && new URLSearchParams(location.search).has("phone"));
+
 export type Permission = "granted" | "denied" | "prompt" | "unsupported";
 
 export async function notificationPermission(): Promise<Permission> {

@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Icon } from "../components/Icon";
-import { type Permission, notificationPermission, requestNotifications } from "../lib/platform";
+import { WEBSITE, WHATSAPP } from "../lib/company";
+import { type Permission, notificationPermission, phoneUI, requestNotifications } from "../lib/platform";
 import { type ThemePref, actions, useApp } from "../lib/store";
 import { useT } from "../lib/useT";
-
-const WHATSAPP = "8801302829487"; // company WhatsApp (same as the website's site.json)
-const WEBSITE = "https://oasisnextbd.github.io/OASIS_official_website/VENGuard/";
 
 export function Account() {
   const { lang, theme, sound, mode, auth } = useApp();
@@ -63,6 +61,7 @@ export function Account() {
       )}
 
       <section className="panel list">
+        {phoneUI && <a className="list-link" href="#/family"><Icon name="users" />{t("familyTitle")}<Icon name="chevron" size={18} /></a>}
         <a className="list-link" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener"><Icon name="whatsapp" />{t("help")}<Icon name="chevron" size={18} /></a>
         <a className="list-link" href={WEBSITE} target="_blank" rel="noopener"><Icon name="globe" />{t("website")}<Icon name="chevron" size={18} /></a>
         {mode === "demo" ? (

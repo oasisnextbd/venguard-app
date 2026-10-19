@@ -6,10 +6,10 @@
  *   live — the VenGuard Firebase backend (live.ts), which pushes updates through setLive().
  */
 import { useSyncExternalStore } from "react";
-import { DEMO_DEVICE, SITES, seedDevices } from "./demo";
+import { DEMO_DEVICE, PHONE_SITES, SITES, seedDevices, seedPhoneDevices } from "./demo";
 import type { Lang } from "./i18n";
 import { translate } from "./i18n";
-import { notify, startAlarmSound, stopAlarmSound, vibrate } from "./platform";
+import { notify, phoneUI, startAlarmSound, stopAlarmSound, vibrate } from "./platform";
 import {
   type AppEvent,
   type Device,
@@ -44,9 +44,14 @@ export interface State {
   devices: Record<string, Device>;
   events: AppEvent[]; // newest first
   alarmFor: string | null; // device id of the open alarm sheet
+  removed: Device[]; // demo: devices taken off the home screen, which can be added back
 }
 
 const KEY = "vg_app_v1";
+
+/** Demo data: the phone layout has five places with one device each; the web app keeps its own set. */
+const demoSites = () => (phoneUI ? PHONE_SITES : SITES);
+const demoDevices = () => (phoneUI ? seedPhoneDevices() : seedDevices());
 const MAX_EVENTS = 100;
 
 function load(): Pick<State, "started" | "mode" | "lang" | "theme" | "sound" | "family"> {
@@ -63,10 +68,11 @@ let state: State = {
   ...saved,
   auth: undefined,
   closeReq: {},
-  sites: saved.mode === "demo" ? SITES : [],
-  devices: saved.mode === "demo" ? seedDevices() : {},
+  sites: saved.mode === "demo" ? demoSites() : [],
+  devices: saved.mode === "demo" ? demoDevices() : {},
   events: [],
   alarmFor: null,
+  removed: [],
 };
 
 const listeners = new Set<() => void>();
@@ -87,6 +93,7 @@ function set(patch: Partial<State>) {
 }
 
 function apply(id: string, fn: (d: Device, now: number) => { device: Device; events: AppEvent[] } | Device) {
+  if (!state.devices[id]) return; // e.g. removed from the demo
   const now = Date.now();
   const r = fn(state.devices[id], now);
   const res = "device" in r ? r : { device: r, events: [] };
@@ -143,19 +150,19 @@ export const actions = {
     stopAlarmSound();
     set({ started: false, alarmFor: null });
   },
-  start: () => set({ started: true, mode: "demo", sites: SITES, devices: seedDevices(), events: [] }),
+  start: () => set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: [], removed: [] }),
   startLive: () => {
-    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null });
+    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, removed: [] });
     startLive();
   },
   switchToDemo: () => {
     stopAlarmSound();
-    set({ mode: "demo", sites: SITES, devices: seedDevices(), events: [], alarmFor: null });
+    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: [], removed: [], alarmFor: null });
   },
   signOut: () => {
     stopAlarmSound();
     void live().then((m) => m.signOut());
-    set({ started: false, mode: "demo", auth: undefined, sites: SITES, devices: seedDevices(), events: [], alarmFor: null });
+    set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: [], removed: [], alarmFor: null });
   },
   setLang: (lang: Lang) => set({ lang }),
   setTheme: (theme: ThemePref) => set({ theme }),
@@ -183,9 +190,27 @@ export const actions = {
     set({ alarmFor: null });
   },
   mute: () => stopAlarmSound(),
+  /** Demo: take a device off the home screen (its events go too). Real devices are not removed from here yet. */
+  removeDevice: (id: string) => {
+    if (state.mode !== "demo" || !state.devices[id]) return;
+    const { [id]: gone, ...devices } = state.devices;
+    if (state.alarmFor === id) stopAlarmSound();
+    set({
+      devices,
+      removed: [...state.removed, gone],
+      events: state.events.filter((e) => e.deviceId !== id),
+      alarmFor: state.alarmFor === id ? null : state.alarmFor,
+    });
+  },
+  /** Demo: put a removed device back, at the end of the list. */
+  restoreDevice: (id: string) => {
+    const d = state.removed.find((x) => x.id === id);
+    if (!d) return;
+    set({ devices: { ...state.devices, [id]: d }, removed: state.removed.filter((x) => x.id !== id) });
+  },
   restartDemo: () => {
     stopAlarmSound();
-    set({ devices: seedDevices(), events: [], alarmFor: null });
+    set({ devices: demoDevices(), events: [], alarmFor: null, removed: [] });
   },
 };
 

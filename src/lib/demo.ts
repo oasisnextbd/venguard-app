@@ -50,3 +50,26 @@ export function seedDevices(): Record<string, Device> {
 
 /** The device the "trigger a leak" demo button uses. */
 export const DEMO_DEVICE = "home-kitchen";
+
+/*
+ * Phone layout (Android app): five places, one device each, so the home screen shows its device panels.
+ * Made-up places; three are safe, one has a low battery and one is offline.
+ */
+export const PHONE_SITES: Site[] = [
+  SITES[0],
+  SITES[1],
+  { id: "office", kind: "home", name: { bn: "অফিস", en: "Office" }, area: { bn: "গুলশান ২", en: "Gulshan 2" } },
+  { id: "restaurant", kind: "home", name: { bn: "রেস্টুরেন্ট", en: "Restaurant" }, area: { bn: "বনানী", en: "Banani" } },
+  SITES[2],
+];
+
+export function seedPhoneDevices(): Record<string, Device> {
+  const list: Device[] = [
+    device("home-kitchen", "home", "রান্নাঘর", "Kitchen", { battery: 78 }),
+    device("mother-kitchen", "mother", "রান্নাঘর", "Kitchen", { kit: "detector_relay", valve: "none", battery: 14 }),
+    device("office-pantry", "office", "প্যান্ট্রি", "Pantry"),
+    device("restaurant-kitchen", "restaurant", "মূল রান্নাঘর", "Main kitchen"),
+    device("tower-3B", "tower", `ফ্ল্যাট ${bnNum(3)}B`, "Flat 3B", { online: false }),
+  ];
+  return Object.fromEntries(list.map((d) => [d.id, d]));
+}

@@ -4,7 +4,8 @@ import { Icon, type IconName } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { CornerSettings, LangToggle, ThemeToggle } from "./components/QuickSettings";
 import { Splash } from "./components/Splash";
-import { isNative, setStatusBar } from "./lib/platform";
+import { isNative, phoneUI, setStatusBar } from "./lib/platform";
+import { PhoneShell } from "./phone/PhoneShell";
 import { type Route, href, useRoute } from "./lib/router";
 import { statusOf } from "./lib/sim";
 import { useApp } from "./lib/store";
@@ -64,6 +65,7 @@ function Screens() {
   if (!started) return <Welcome />;
   if (mode === "live" && auth === undefined) return <main className="welcome"><CornerSettings /><p className="muted">{t("loading")}</p></main>;
   if (mode === "live" && auth === null) return <SignIn />;
+  if (phoneUI) return <PhoneShell route={route} />;
 
   const tabOf = route.name === "device" || route.name === "site" || route.name === "add" ? "home" : route.name;
   const unread = Object.values(devices).some((d) => statusOf(d) === "danger") ? 1 : 0;
