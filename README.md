@@ -66,7 +66,7 @@ src/
   lib/i18n.ts           all text, Bangla and English
   lib/router.ts         hash routes (#/device/<id> …)
   screens/              Home, Device, Site (building), Alerts, Family, Account, Welcome
-  components/           Logo, Icon, StatusPill, charts, event list, alarm sheet
+  components/           Logo, Icon, StatusPill, charts, event list, alarm sheet, Splash
   styles.css            brand tokens, Day/Night themes, all styles
 public/                 icons, fonts (SIL OFL), web app manifest, service worker
 android/                Capacitor Android project (committed; build output is ignored)
@@ -84,6 +84,13 @@ repo). `src/components/Logo.tsx` shows the primary lockup on light and the rever
 icons use the symbol: reversed symbol on Deep Navy `#07192C` (`public/icons/`, `android/app/src/main/res/`;
 the notification icon is a white silhouette as Android requires). Replace the files with the designer's
 vector master when it exists, keeping the names. Only the logo follows that guide: the app keeps the colours, fonts and themes above.
+
+**Android app vs web app.** Both are built from the same code; anything only for the Android app checks
+`isNative` (`src/lib/platform.ts`) and leaves the web app unchanged. So far: the opening screen
+(`src/components/Splash.tsx`): the reversed logo and the motto ("Detect early, stay safe", text key
+`motto`) on Deep Navy for about 2 seconds at start-up. Android's own start-up screen before it is plain
+navy with no icon (`android/app/src/main/res/values/splash.xml`, `values/styles.xml`), so the two read as one.
+
 Status colours are green / ISO yellow / red only, never orange, and every status shows an
 icon and a word, not colour alone. No placeholder prices or contact details.
 

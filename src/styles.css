@@ -306,3 +306,10 @@ html[lang="bn"] .eyebrow { letter-spacing: 0; font-size: .85rem; }
 .lang-btn:lang(bn) { font-family: var(--font-bn, var(--font)); font-size: .9rem; }
 .welcome { position: relative; }
 .corner-settings { position: absolute; top: calc(12px + var(--safe-top)); right: 16px; display: flex; gap: 8px; }
+
+/* 16 · Opening screen (Android app only, components/Splash.tsx): always navy, like Android's start-up screen */
+.splash { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; align-items: center; gap: 22px; padding: calc(24vh + var(--safe-top)) 24px 0; background: #07192C; text-align: center; animation: splash-in .5s ease-out both; transition: opacity .4s ease; }
+.splash--leaving { opacity: 0; pointer-events: none; }
+.splash-logo { display: block; width: min(220px, 62vw); height: auto; }
+.splash-motto { margin: 0; color: rgba(255, 255, 255, .72); font-size: 1.2rem; font-weight: 400; letter-spacing: .01em; }
+@keyframes splash-in { from { opacity: 0; transform: translateY(6px); } }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Opening screen. Android shows a plain navy screen while the app starts (no icon), then the app draws
+     its own opening screen on the same navy: logo, then the motto (src/components/Splash.tsx). -->
+<resources>
+    <color name="vg_splash">#07192C</color>
+</resources>

@@ -10,6 +10,7 @@ const dict = {
   tabFamily: { bn: "পরিবার", en: "Family" },
   tabAccount: { bn: "অ্যাকাউন্ট", en: "Account" },
   back: { bn: "ফিরে যান", en: "Back" },
+  motto: { bn: "আগেই শনাক্ত করুন, নিরাপদ থাকুন", en: "Detect early, stay safe" }, // opening screen (Android app)
 
   // Welcome
   tagline: { bn: "নিজেই রক্ষা করে।", en: "Safety that acts." },

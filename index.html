@@ -16,8 +16,11 @@
   /* Apply the saved theme before first paint. */
   (function () { var p = "auto"; try { p = (JSON.parse(localStorage.getItem("vg_app_v1") || "{}").theme) || "auto"; } catch (e) {}
     var dark = p === "dark" || (p === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.dataset.theme = dark ? "dark" : "light"; })();
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    /* Android app: stay navy from Android's start-up screen until the opening screen (Splash.tsx) is done. */
+    if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add("vg-booting"); })();
 </script>
+<style>.vg-booting, .vg-booting body { background: #07192C; }</style>
 </head>
 <body>
 <div id="root"></div>

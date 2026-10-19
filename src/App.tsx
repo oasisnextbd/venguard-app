@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AlarmSheet } from "./components/AlarmSheet";
 import { Icon, type IconName } from "./components/Icon";
 import { Logo } from "./components/Logo";
 import { CornerSettings, LangToggle, ThemeToggle } from "./components/QuickSettings";
-import { setStatusBar } from "./lib/platform";
+import { Splash } from "./components/Splash";
+import { isNative, setStatusBar } from "./lib/platform";
 import { type Route, href, useRoute } from "./lib/router";
 import { statusOf } from "./lib/sim";
 import { useApp } from "./lib/store";
@@ -25,7 +26,8 @@ const TABS: { route: Route; icon: IconName; label: "tabHome" | "tabAlerts" | "ta
   { route: { name: "account" }, icon: "user", label: "tabAccount" },
 ];
 
-function useTheme() {
+/** `booting`: the navy opening screen is showing, so the status bar stays navy until it is gone. */
+function useTheme(booting: boolean) {
   const { theme } = useApp();
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -33,19 +35,30 @@ function useTheme() {
       const dark = theme === "dark" || (theme === "auto" && mq.matches);
       document.documentElement.dataset.theme = dark ? "dark" : "light";
       document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#07192C" : "#FFFFFF");
-      void setStatusBar(dark);
+      void setStatusBar(dark || booting);
     };
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
-  }, [theme]);
+  }, [theme, booting]);
 }
 
 export function App() {
+  const [booting, setBooting] = useState(isNative);
+  const endBoot = useCallback(() => setBooting(false), []);
+  useTheme(booting);
+  return (
+    <>
+      <Screens />
+      {booting && <Splash onDone={endBoot} />}
+    </>
+  );
+}
+
+function Screens() {
   const { started, mode, auth, lang, events, devices } = useApp();
   const { t } = useT();
   const route = useRoute();
-  useTheme();
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   if (!started) return <Welcome />;
