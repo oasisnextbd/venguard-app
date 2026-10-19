@@ -1,26 +1,15 @@
 /**
  * App state: one small store, read by components through useApp().
  * Settings persist on the phone (localStorage).
- * Two sources of device data:
- *   demo — the simulator (sim.ts), ticked here once a second;
- *   live — the VenGuard Firebase backend (live.ts), which pushes updates through setLive().
+ * Device data comes only from the VenGuard Firebase backend (live.ts), which pushes updates through
+ * setLive(). There is no demo: the team tests with the emulators in the team dashboard.
  */
 import { useSyncExternalStore } from "react";
-import { DEMO_DEVICE, SITES, seedDevices } from "./demo";
 import type { Lang } from "./i18n";
 import { translate } from "./i18n";
 import { placeName } from "./place";
 import { notify, phoneUI, startAlarmSound, startAlarmVibration, stopAlarmSound, vibrate } from "./platform";
-import {
-  type AppEvent,
-  type Device,
-  type Site,
-  manualReset,
-  regulatorOff,
-  remoteClose,
-  startLeak,
-  step,
-} from "./sim";
+import type { AppEvent, Device, Site } from "./sim";
 
 export type ThemePref = "auto" | "light" | "dark";
 export interface Contact {
@@ -28,13 +17,12 @@ export interface Contact {
   phone: string;
 }
 
-export type Mode = "demo" | "live";
 export type CloseStatus = "sent" | "closed" | "already_closed" | "failed";
 
 export interface State {
+  /** The web app has passed its welcome screen (the Android app opens with its splash instead). */
   started: boolean;
-  mode: Mode;
-  /** live mode: undefined = still checking, null = signed out */
+  /** undefined = still checking, null = signed out */
   auth: { uid: string; who: string } | null | undefined; // who: email or phone number
   closeReq: Record<string, CloseStatus>;
   lang: Lang;
@@ -50,32 +38,26 @@ export interface State {
 
 const KEY = "vg_app_v1";
 
-/** Demo data (web app only: the Android app has no demo, see load()). */
-const demoSites = () => SITES;
-const demoDevices = () => seedDevices();
-const demoEvents = (): AppEvent[] => [];
-const MAX_EVENTS = 100;
-
-function load(): Pick<State, "started" | "mode" | "lang" | "theme" | "sound" | "family"> {
-  const fallback = { started: false, mode: "demo" as Mode, lang: "bn" as Lang, theme: "auto" as ThemePref, sound: true, family: [] as Contact[] };
-  let saved = fallback;
+function load(): Pick<State, "started" | "lang" | "theme" | "sound" | "family"> {
+  const fallback = { started: false, lang: "bn" as Lang, theme: "auto" as ThemePref, sound: true, family: [] as Contact[] };
+  let saved: typeof fallback & { mode?: string } = fallback;
   try {
     saved = { ...fallback, ...JSON.parse(localStorage.getItem(KEY) || "{}") };
   } catch {
     /* keep the defaults */
   }
-  // The Android app is for real VenGuard accounts only: no demo devices, straight to sign-in.
-  return phoneUI ? { ...saved, started: true, mode: "live" } : saved;
+  const { started, lang, theme, sound, family } = saved;
+  // Browsers that used the old demo (mode "demo") see the welcome screen again.
+  return { started: phoneUI || (started && saved.mode !== "demo"), lang, theme, sound, family };
 }
 
-const saved = load();
 let state: State = {
-  ...saved,
+  ...load(),
   auth: undefined,
   closeReq: {},
-  sites: saved.mode === "demo" ? demoSites() : [],
-  devices: saved.mode === "demo" ? demoDevices() : {},
-  events: saved.mode === "demo" ? demoEvents() : [],
+  sites: [],
+  devices: {},
+  events: [],
   alarmFor: null,
   mitigated: null,
 };
@@ -83,9 +65,9 @@ let state: State = {
 const listeners = new Set<() => void>();
 
 function save() {
-  const { started, mode, lang, theme, sound, family } = state;
+  const { started, lang, theme, sound, family } = state;
   try {
-    localStorage.setItem(KEY, JSON.stringify({ started, mode, lang, theme, sound, family }));
+    localStorage.setItem(KEY, JSON.stringify({ started, lang, theme, sound, family }));
   } catch {
     /* private mode: settings last for this session only */
   }
@@ -97,17 +79,9 @@ function set(patch: Partial<State>) {
   listeners.forEach((l) => l());
 }
 
-function apply(id: string, fn: (d: Device, now: number) => { device: Device; events: AppEvent[] } | Device) {
-  if (!state.devices[id]) return; // e.g. removed meanwhile
-  const now = Date.now();
-  const r = fn(state.devices[id], now);
-  const res = "device" in r ? r : { device: r, events: [] };
-  set({ devices: { ...state.devices, [id]: res.device }, events: [...res.events.reverse(), ...state.events].slice(0, MAX_EVENTS) });
-}
-
 /** For live.ts: push backend updates into the store. */
 export function setLive(patch: Partial<State>) {
-  if (state.mode === "live") set(patch);
+  set(patch);
 }
 
 function placeOf(deviceId: string): string {
@@ -138,30 +112,6 @@ export function clearAlarm(deviceId: string) {
   void notify(translate(state.lang, "mitigatedTitle"), translate(state.lang, "mitigatedBody", { place }));
 }
 
-function tick() {
-  if (state.mode !== "demo") return;
-  const now = Date.now();
-  const devices: Record<string, Device> = {};
-  const fresh: AppEvent[] = [];
-  for (const [id, d] of Object.entries(state.devices)) {
-    const r = step(d, now, Math.random);
-    devices[id] = r.device;
-    fresh.push(...r.events);
-  }
-  state = { ...state, devices, events: [...fresh.reverse(), ...state.events].slice(0, MAX_EVENTS) };
-  listeners.forEach((l) => l());
-  const confirmed = fresh.find((e) => e.type === "leak_confirmed");
-  if (confirmed) raiseAlarm(confirmed.deviceId);
-  for (const e of fresh) if (e.type === "air_clear") clearAlarm(e.deviceId);
-  // The alarm sound stops by itself once the air is clear.
-  if (state.alarmFor && !state.devices[state.alarmFor].alarm) stopAlarmSound();
-}
-
-let interval: number | null = null;
-export function startSimulation() {
-  if (interval === null) interval = window.setInterval(tick, 1000);
-}
-
 const live = () => import("./live");
 
 export function startLive() {
@@ -169,27 +119,15 @@ export function startLive() {
 }
 
 export const actions = {
-  /** Back to the welcome screen (demo or sign-in). Keeps a live sign-in: "Sign in" then goes straight home. */
-  showWelcome: () => {
-    if (phoneUI) return;
-    stopAlarmSound();
-    set({ started: false, alarmFor: null });
-  },
-  start: () => { if (!phoneUI) set({ started: true, mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents() }); },
+  /** Web app welcome screen: "Sign in to my VenGuard". Someone still signed in goes straight home. */
   startLive: () => {
-    set({ started: true, mode: "live", sites: [], devices: {}, events: [], alarmFor: null, mitigated: null });
+    set({ started: true });
     startLive();
-  },
-  switchToDemo: () => {
-    if (phoneUI) return;
-    stopAlarmSound();
-    set({ mode: "demo", sites: demoSites(), devices: demoDevices(), events: demoEvents(), alarmFor: null, mitigated: null });
   },
   signOut: () => {
     stopAlarmSound();
     void live().then((m) => m.signOut());
-    if (phoneUI) set({ auth: null, sites: [], devices: {}, events: [], alarmFor: null, mitigated: null });
-    else set({ started: false, mode: "demo", auth: undefined, sites: demoSites(), devices: demoDevices(), events: demoEvents(), alarmFor: null, mitigated: null });
+    set({ started: phoneUI, auth: null, sites: [], devices: {}, events: [], alarmFor: null, mitigated: null });
   },
   setLang: (lang: Lang) => set({ lang }),
   setTheme: (theme: ThemePref) => set({ theme }),
@@ -199,19 +137,13 @@ export const actions = {
   },
   addContact: (c: Contact) => {
     set({ family: [...state.family, c].slice(0, 3) });
-    if (state.mode === "live") void live().then((m) => m.saveFamily(state.family));
+    void live().then((m) => m.saveFamily(state.family));
   },
   removeContact: (i: number) => {
     set({ family: state.family.filter((_, j) => j !== i) });
-    if (state.mode === "live") void live().then((m) => m.saveFamily(state.family));
+    void live().then((m) => m.saveFamily(state.family));
   },
-  leak: (id = DEMO_DEVICE) => apply(id, (d) => startLeak(d)),
-  remoteClose: (id: string) => {
-    if (state.mode === "live") void live().then((m) => m.sendClose(id));
-    else apply(id, remoteClose);
-  },
-  regulatorOff: (id: string) => apply(id, regulatorOff),
-  reset: (id: string) => apply(id, manualReset),
+  remoteClose: (id: string) => void live().then((m) => m.sendClose(id)),
   closeAlarm: () => {
     stopAlarmSound();
     set({ alarmFor: null });
@@ -219,20 +151,16 @@ export const actions = {
   mute: () => stopAlarmSound(),
   dismissMitigated: () => set({ mitigated: null }),
   /**
-   * Remove a device from this account (live): it disappears from Home and History. The device itself
+   * Remove a device from this account: it disappears from Home and History. The device itself
    * keeps working; it can be added again with its ID and sticker code.
    */
   removeDevice: async (id: string): Promise<void> => {
-    if (state.mode !== "live" || !state.devices[id]) return;
+    if (!state.devices[id]) return;
     if (state.alarmFor === id) {
       stopAlarmSound();
       set({ alarmFor: null });
     }
     await (await live()).unclaimDevice(id);
-  },
-  restartDemo: () => {
-    stopAlarmSound();
-    set({ devices: demoDevices(), events: demoEvents(), alarmFor: null, mitigated: null });
   },
 };
 

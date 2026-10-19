@@ -2,7 +2,7 @@
  * Firebase project for live devices (free Spark plan; data protection is in the database
  * security rules: OASIS_official_website/backend/connected-firebase/database.rules.json).
  * These values identify the app; they are not secrets.
- * The SDK is loaded only when someone signs in, so the demo stays small and fast.
+ * The SDK is loaded only from "Sign in to my VenGuard" on, so the welcome screen stays small and fast.
  */
 export const firebaseConfig = {
   apiKey: "AIzaSyBhorrXE1tw7IH1CqUpvOYNgQaKpW4xOoA",

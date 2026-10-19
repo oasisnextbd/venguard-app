@@ -3,8 +3,6 @@ export type Lang = "bn" | "en";
 
 const dict = {
   // App frame
-  demo: { bn: "ডেমো", en: "Demo" },
-  demoNote: { bn: "এটি ডেমো: যন্ত্রগুলো সিমুলেটেড। আসল যন্ত্র পরের আপডেটে যুক্ত হবে।", en: "This is a demo with simulated devices. Real devices connect in a later update." },
   tabHome: { bn: "হোম", en: "Home" },
   tabAlerts: { bn: "সতর্কতা", en: "Alerts" },
   tabFamily: { bn: "পরিবার", en: "Family" },
@@ -16,7 +14,6 @@ const dict = {
   // Welcome
   tagline: { bn: "নিজেই রক্ষা করে।", en: "Safety that acts." },
   welcomeLead: { bn: "গ্যাস লিক হলে VenGuard নিজেই ভালভ বন্ধ করে ও এগজস্ট ফ্যান চালু করে। এই অ্যাপে আপনি দূর থেকে সব দেখতে পান।", en: "When gas leaks, VenGuard closes the valve and starts the exhaust fan by itself. This app lets you see it all from anywhere." },
-  startDemo: { bn: "ডেমো শুরু করুন", en: "Start the demo" },
   chooseLang: { bn: "ভাষা", en: "Language" },
 
   // Greeting / overview
@@ -30,8 +27,6 @@ const dict = {
   kitchens: { bn: "রান্নাঘর", en: "Kitchens" },
   buildings: { bn: "ভবন", en: "Buildings" },
   units: { bn: "{n}টি ইউনিট", en: "{n} units" },
-  tryLeak: { bn: "ডেমো: একটি লিক ঘটিয়ে দেখুন", en: "Demo: trigger a leak and watch" },
-  tryLeakSub: { bn: "বাসার রান্নাঘরে লিক শুরু হবে। ৭ সেকেন্ড পর VenGuard নিজেই কাজ করবে।", en: "Starts a leak in the Home kitchen. After 7 seconds VenGuard acts on its own." },
 
   // Status words (short and long)
   st_danger: { bn: "গ্যাস লিক", en: "Gas leak" },
@@ -78,10 +73,6 @@ const dict = {
   reset1: { bn: "জানালা খুলুন, কোনো সুইচ বা আগুন জ্বালাবেন না।", en: "Open the windows. Do not use switches or flames." },
   reset2: { bn: "গন্ধ চলে গেলে চুলার কাছে ভালভের লিভার তুলুন।", en: "When the smell has gone, lift the valve lever at the stove." },
   reset3: { bn: "চুলা জ্বালানোর আগে আবার গন্ধ নিয়ে দেখুন।", en: "Check for any smell again before lighting the stove." },
-  resetWait: { bn: "বাতাস এখনো পরিষ্কার হয়নি। ফ্যান চলছে।", en: "The air is not clear yet. The fan is running." },
-  demoReset: { bn: "ডেমো: লিভার তুলে রিসেট করুন", en: "Demo: lift the lever to reset" },
-  demoLeak: { bn: "ডেমো: লিক ঘটান", en: "Demo: start a leak" },
-  demoRegulator: { bn: "ডেমো: রেগুলেটর হাতে বন্ধ করুন", en: "Demo: turn the regulator off by hand" },
   addValve: { bn: "স্বয়ংক্রিয়ভাবে গ্যাস বন্ধ করতে ভালভ যোগ করুন: ৳১,৭০০", en: "Add the valve to shut off gas automatically: BDT 1,700" },
   history: { bn: "সাম্প্রতিক ঘটনা", en: "Recent events" },
   noEvents: { bn: "এখনো কোনো ঘটনা নেই।", en: "Nothing has happened yet." },
@@ -104,8 +95,6 @@ const dict = {
   alarmValve: { bn: "ভালভ নিজেই গ্যাস বন্ধ করেছে", en: "The valve shut off the gas by itself" },
   alarmFan: { bn: "এগজস্ট ফ্যান গ্যাস বের করছে", en: "The exhaust fan is clearing the gas" },
   alarmNoValve: { bn: "এই কিটে ভালভ নেই: রেগুলেটর বন্ধ করুন", en: "This kit has no valve: turn off the regulator" },
-  alarmNoFamily: { bn: "পরিবারের কাউকে যোগ করুন, যাতে লিক হলে তাঁরা SMS পান", en: "Add family members so they get an SMS when there is a leak" },
-  alarmSms: { bn: "পরিবারের {n} জনকে SMS পাঠানো হয়েছে", en: "SMS sent to {n} family members" },
   alarmDo: { bn: "সুইচ, আগুন বা মোবাইল চার্জার ব্যবহার করবেন না। জানালা খুলুন।", en: "Do not use switches, flames or chargers. Open the windows." },
   callFamily: { bn: "পরিবারকে কল করুন", en: "Call family" },
   seeKitchen: { bn: "রান্নাঘর দেখুন", en: "See the kitchen" },
@@ -119,7 +108,6 @@ const dict = {
 
   // Family
   familyTitle: { bn: "পরিবার", en: "Family" },
-  familyLead: { bn: "লিক হলে এঁরা সঙ্গে সঙ্গে SMS পাবেন, ফোনে ইন্টারনেট না থাকলেও। সর্বোচ্চ ৩ জন।", en: "These people get an SMS the moment there is a leak, even without internet on their phone. Up to 3 people." },
   familyLeadPilot: { bn: "লিক হলে এঁদের SMS পাঠানো হবে — SMS সতর্কতা চালু হওয়ার পর (শিগগিরই)। সর্বোচ্চ ৩ জন।", en: "These people will get an SMS when there is a leak, once SMS alerts are switched on (coming soon). Up to 3 people." },
   name: { bn: "নাম", en: "Name" },
   phone: { bn: "মোবাইল নম্বর", en: "Mobile number" },
@@ -133,7 +121,6 @@ const dict = {
   accountTitle: { bn: "অ্যাকাউন্ট", en: "Account" },
   plan: { bn: "কানেক্টেড প্ল্যান", en: "Connected plan" },
   planPrice: { bn: "৳৫৫০ / বছর", en: "BDT 550 / year" },
-  planDemo: { bn: "ডেমোতে চালু", en: "Active in the demo" },
   planNote: { bn: "দূর থেকে গ্যাস বন্ধ, SMS ও সতর্কতা। মূল সুরক্ষা প্ল্যান ছাড়াও পুরোপুরি কাজ করে।", en: "Remote close, SMS and alerts. Core safety works fully without the plan." },
   theme: { bn: "থিম", en: "Theme" },
   themeAuto: { bn: "স্বয়ংক্রিয়", en: "Auto" },
@@ -148,7 +135,6 @@ const dict = {
   blocked: { bn: "ফোনের সেটিংসে বন্ধ", en: "Blocked in phone settings" },
   help: { bn: "WhatsApp-এ সাহায্য", en: "Help on WhatsApp" },
   website: { bn: "VenGuard ওয়েবসাইট", en: "VenGuard website" },
-  resetDemo: { bn: "ডেমো নতুন করে শুরু করুন", en: "Restart the demo" },
   version: { bn: "সংস্করণ", en: "Version" },
 
   // Live mode: sign-in
@@ -213,7 +199,6 @@ const dict = {
   // Live mode: account
   signedInAs: { bn: "সাইন ইন: {who}", en: "Signed in: {who}" },
   signOut: { bn: "সাইন আউট", en: "Sign out" },
-  switchDemo: { bn: "ডেমো দেখুন", en: "Open the demo" },
   pilot: { bn: "পাইলট", en: "Pilot" },
   ev_test: { bn: "পরীক্ষা বোতাম চাপা হয়েছে", en: "Test button pressed" },
   ev_battery_low: { bn: "ব্যাটারি কম", en: "Battery low" },

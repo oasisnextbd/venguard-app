@@ -1,5 +1,6 @@
 /**
- * Demo device simulator.
+ * VenGuard device model and simulator: the device page (simulator.html) runs it, the app uses its types
+ * and gas-bar helpers, and the team dashboard's emulators copy it (website repo, team-dashboard/js/emusim.js).
  *
  * Models the VenGuard safety chain exactly as the website specifies it
  * (venguard/templates/pages/how-it-works.html in the website repo):
@@ -78,7 +79,7 @@ export interface Device {
   fan: boolean;
   battery: number | null; // %, null = not reported (live devices)
   online: boolean;
-  leaking: boolean; // demo: a leak source is active
+  leaking: boolean; // simulator: a leak source is active
   confirm: number; // seconds spent above THRESHOLD
   alarm: boolean; // leak confirmed and not yet cleared
 }
@@ -158,7 +159,7 @@ export function step(d: Device, now: number, rand: () => number): { device: Devi
   return { device: n, events };
 }
 
-/** Demo: start a leak at this device. */
+/** Simulator: start a leak at this device. */
 export function startLeak(d: Device): Device {
   return d.online ? { ...d, leaking: true } : d;
 }
@@ -172,7 +173,7 @@ export function remoteClose(d: Device, now: number): { device: Device; events: A
   };
 }
 
-/** Demo: the person turns the cylinder regulator off by hand (detector + relay kits have no valve). */
+/** Simulator: the person turns the cylinder regulator off by hand (detector + relay kits have no valve). */
 export function regulatorOff(d: Device, now: number): { device: Device; events: AppEvent[] } {
   if (!d.leaking) return { device: d, events: [] };
   return {
@@ -186,7 +187,7 @@ export function canReset(d: Device): boolean {
   return d.valve === "closed" && !d.alarm && d.gas < THRESHOLD;
 }
 
-/** Demo: the person lifts the reset lever at the stove. */
+/** Simulator: the person lifts the reset lever at the stove. */
 export function manualReset(d: Device, now: number): { device: Device; events: AppEvent[] } {
   if (!canReset(d)) return { device: d, events: [] };
   return {

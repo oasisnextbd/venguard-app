@@ -57,14 +57,14 @@ export function App() {
 }
 
 function Screens() {
-  const { started, mode, auth, lang, events, devices } = useApp();
+  const { started, auth, lang, events, devices } = useApp();
   const { t } = useT();
   const route = useRoute();
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   if (!started) return <Welcome />;
-  if (mode === "live" && auth === undefined) return <main className="welcome"><CornerSettings /><p className="muted">{t("loading")}</p></main>;
-  if (mode === "live" && auth === null) return <SignIn />;
+  if (auth === undefined) return <main className="welcome"><CornerSettings /><p className="muted">{t("loading")}</p></main>;
+  if (auth === null) return <SignIn />;
   if (phoneUI) return <PhoneShell route={route} />;
 
   const tabOf = route.name === "device" || route.name === "site" || route.name === "add" ? "home" : route.name;
@@ -75,7 +75,6 @@ function Screens() {
       <a className="skip-link" href="#content">{t("tabHome")}</a>
       <header className="topbar">
         <a href="#/" className="topbar-logo" aria-label="VenGuard"><Logo height={31} /></a>
-        {mode === "demo" && <span className="demo-chip" title={t("demoNote")}>{t("demo")}</span>}
         <nav className="tabs" aria-label="VenGuard">
           {TABS.map((tab) => (
             <a key={tab.label} href={href(tab.route)} aria-current={tabOf === tab.route.name ? "page" : undefined}>

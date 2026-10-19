@@ -29,10 +29,10 @@ const BASE = import.meta.env.BASE_URL;
 const PHOTO = { detector: "devices/detector.webp", valve: "devices/valve.webp", relay: "devices/relay.webp" };
 
 export function PhoneDevice({ id }: { id: string }) {
-  const { devices, sites, events, mode, alarmFor } = useApp();
+  const { devices, sites, events, alarmFor } = useApp();
   const { t, n, lang } = useT();
   const d = devices[id];
-  if (!d) return <main className="page"><a className="back" href="#/"><Icon name="back" size={20} />{t("back")}</a><p className="muted">{mode === "live" ? t("loading") : t("noEvents")}</p></main>;
+  if (!d) return <main className="page"><a className="back" href="#/"><Icon name="back" size={20} />{t("back")}</a><p className="muted">{t("loading")}</p></main>;
   const site = sites.find((s) => s.id === d.siteId);
   const status = statusOf(d);
   const mine = events.filter((e) => e.deviceId === id).slice(0, 5);

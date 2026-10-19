@@ -1,15 +1,14 @@
 import { Sparkline } from "../components/Charts";
 import { Icon } from "../components/Icon";
 import { StatusPill, STATUS_ICON, longKey } from "../components/Status";
-import { DEMO_DEVICE } from "../lib/demo";
 import { href } from "../lib/router";
 import { type Device, type Status, needsAttention, statusOf, worst } from "../lib/sim";
-import { actions, useApp } from "../lib/store";
+import { useApp } from "../lib/store";
 import { timeOfDay } from "../lib/i18n";
 import { useT } from "../lib/useT";
 
 export function Home() {
-  const { sites, devices, mode } = useApp();
+  const { sites, devices } = useApp();
   const { t, n, lang } = useT();
   const all = Object.values(devices);
   const statuses = all.map(statusOf);
@@ -17,12 +16,10 @@ export function Home() {
   const count = statuses.filter(needsAttention).length;
   const urgent = all.find((d) => statusOf(d) === overall);
   const urgentSite = urgent && sites.find((s) => s.id === urgent.siteId);
-  const demo = devices[DEMO_DEVICE];
-  const demoBusy = !demo || demo.leaking || demo.alarm || demo.valve === "closed";
   const homes = sites.filter((s) => s.kind === "home");
   const buildings = sites.filter((s) => s.kind === "building");
 
-  if (mode === "live" && all.length === 0) {
+  if (all.length === 0) {
     return (
       <main className="page">
         <p className="greet">{timeOfDay(lang)}</p>
@@ -51,12 +48,6 @@ export function Home() {
         </div>
       </section>
 
-      {mode === "demo" && !demoBusy && (
-        <button type="button" className="demo-cta" onClick={() => actions.leak()}>
-          <Icon name="play" size={20} />
-          <span><strong>{t("tryLeak")}</strong><span className="small">{t("tryLeakSub")}</span></span>
-        </button>
-      )}
 
       <h2 className="section-title">{t("kitchens")}</h2>
       <div className="cards">
@@ -87,7 +78,7 @@ export function Home() {
           );
         })}
       </div>
-      {mode === "live" && <a className="arrow-link" href="#/add"><Icon name="plus" size={18} />{t("addAnother")}</a>}
+      {<a className="arrow-link" href="#/add"><Icon name="plus" size={18} />{t("addAnother")}</a>}
     </main>
   );
 }

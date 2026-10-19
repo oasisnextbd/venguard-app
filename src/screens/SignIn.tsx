@@ -2,8 +2,7 @@ import { type FormEvent, useState } from "react";
 import { Logo } from "../components/Logo";
 import { CornerSettings } from "../components/QuickSettings";
 import type { ErrorKey } from "../lib/live";
-import { isNative, phoneUI } from "../lib/platform";
-import { actions } from "../lib/store";
+import { isNative } from "../lib/platform";
 import { useT } from "../lib/useT";
 
 const PHONE = /^01[3-9]\d{8}$/;
@@ -13,7 +12,7 @@ const MIN_PASSWORD = 8;
 type View = "email" | "create" | "forgot" | "phone" | "code";
 
 /**
- * Sign-in for live mode (Firebase Auth). Google and email + password are free on the Spark plan;
+ * Sign-in (Firebase Auth). Google and email + password are free on the Spark plan;
  * phone works only with the console's test numbers until an SMS plan is added.
  * Inside the Android app Google is hidden (see live.ts).
  */
@@ -165,7 +164,6 @@ export function SignIn() {
         {emailView
           ? <button type="button" className="link-btn" onClick={() => go("phone")}>{t("usePhone")}</button>
           : <button type="button" className="link-btn" onClick={() => go("email")}>{t("useEmail")}</button>}
-        {!phoneUI && <button type="button" className="link-btn" onClick={actions.switchToDemo}>{t("switchDemo")}</button>}
       </div>
     </main>
   );

@@ -7,7 +7,7 @@ const PHONE = /^01[3-9]\d{8}$/;
 
 /** People who get an SMS when there is a leak (sent by the device's backend, not this phone). */
 export function Family() {
-  const { family, mode } = useApp();
+  const { family } = useApp();
   const { t, n } = useT();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -27,7 +27,7 @@ export function Family() {
   return (
     <main className="page">
       <h1 className="page-title">{t("familyTitle")}</h1>
-      <p className="muted">{t(mode === "live" ? "familyLeadPilot" : "familyLead")}</p>
+      <p className="muted">{t("familyLeadPilot")}</p>
       {family.length > 0 && (
         <ul className="panel list">
           {family.map((c, i) => (

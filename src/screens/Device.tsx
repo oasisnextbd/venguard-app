@@ -2,16 +2,16 @@ import { Gauge } from "../components/Charts";
 import { EventList } from "../components/EventList";
 import { Icon } from "../components/Icon";
 import { StatusPill, longKey } from "../components/Status";
-import { CONFIRM_SECONDS, THRESHOLD, canReset, statusOf } from "../lib/sim";
+import { CONFIRM_SECONDS, THRESHOLD, statusOf } from "../lib/sim";
 import { actions, useApp } from "../lib/store";
 import { useT } from "../lib/useT";
 
 export function DeviceScreen({ id }: { id: string }) {
-  const { devices, sites, events, mode } = useApp();
+  const { devices, sites, events } = useApp();
   const { t, n, lang } = useT();
   const d = devices[id];
-  // Live mode: just after adding a device its data takes a moment to arrive.
-  if (!d) return <main className="page"><p className="muted">{mode === "live" ? t("loading") : "404"}</p></main>;
+  // Just after adding a device its data takes a moment to arrive.
+  if (!d) return <main className="page"><p className="muted">{t("loading")}</p></main>;
   const site = sites.find((s) => s.id === d.siteId)!;
   const status = statusOf(d);
   const hasValve = d.valve !== "none";
@@ -81,10 +81,10 @@ export function DeviceScreen({ id }: { id: string }) {
 
 /**
  * What a person can do for one device: close the gas remotely (never open it), the steps to turn gas
- * back on by hand at the stove, and the demo buttons. Shared by the web and Android device screens.
+ * back on by hand at the stove. Shared by the web and Android device screens.
  */
 export function DeviceActions({ id }: { id: string }) {
-  const { devices, mode, closeReq } = useApp();
+  const { devices, closeReq } = useApp();
   const { t } = useT();
   const d = devices[id];
   if (!d) return null;
@@ -117,21 +117,7 @@ export function DeviceActions({ id }: { id: string }) {
             <li>{t("reset2")}</li>
             <li>{t("reset3")}</li>
           </ol>
-          {mode === "live" ? null : canReset(d)
-            ? <button type="button" className="btn btn--secondary btn--block demo-btn" onClick={() => actions.reset(id)}><Icon name="lever" />{t("demoReset")}</button>
-            : <p className="small muted">{t("resetWait")}</p>}
         </section>
-      )}
-
-      {mode === "demo" && d.online && (
-        <div className="demo-actions">
-          {!d.leaking && !d.alarm && d.valve !== "closed" && (
-            <button type="button" className="btn btn--ghost demo-btn" onClick={() => actions.leak(id)}><Icon name="play" size={18} />{t("demoLeak")}</button>
-          )}
-          {!hasValve && d.leaking && (
-            <button type="button" className="btn btn--ghost demo-btn" onClick={() => actions.regulatorOff(id)}><Icon name="valve" size={18} />{t("demoRegulator")}</button>
-          )}
-        </div>
       )}
 
     </>

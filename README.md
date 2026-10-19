@@ -6,8 +6,8 @@ active ventilation relay and automatic valve. This app shows every kitchen's gas
 valve, fan and battery, raises a full-screen alarm on a leak, and lets the owner close
 the gas remotely (Connected plan). Gas can never be turned back on from the app.
 
-**Status: demo.** Devices are simulated (`src/lib/sim.ts`) so the app can be shown
-anywhere. Real devices connect in a later update; see "Connecting real devices".
+**Status: pilot.** Customers sign in and add their VenGuard; the founders test with the emulators
+in the team dashboard. There is no demo mode (see "Showing VenGuard").
 
 | | |
 |---|---|
@@ -19,21 +19,16 @@ anywhere. Real devices connect in a later update; see "Connecting real devices".
 
 1. Open the APK link above on the phone and download it.
 2. Allow "Install unknown apps" for the browser when Android asks.
-3. Open VenGuard and tap **Start the demo**.
+3. Open VenGuard, sign in (or create an account) and add your VenGuard with the ID and code on its sticker.
 
 Google Play comes later (one-time USD 25 developer account, plus release signing below).
 
-## Demo script (2 minutes)
+## Showing VenGuard (no demo mode)
 
-1. Home shows every kitchen and a building with 12 flats.
-2. Tap **Demo: trigger a leak and watch**. The Home kitchen's gas rises; the app shows
-   "Checking" for 7 seconds (cooking smells never trigger it).
-3. The leak is confirmed: full-screen alarm, sound, vibration and notification. The valve
-   has closed by itself and the ventilation relay has started the exhaust fan.
-4. **See the kitchen**: the gauge falls as the fan clears the air; the fan stops on its own.
-5. Follow the reset steps and tap **Demo: lift the lever to reset**.
-6. *Mother's flat* has the Detector + Relay kit (no valve): trigger a leak there to show
-   the fan runs but the gas must be turned off by hand.
+The app has no demo or made-up devices, on Android or the web: it shows only the devices on the
+signed-in account. To show or test it, a founder starts their **emulator** in the team dashboard
+(website repo, `team-dashboard/README.md`), adds it in the app with its ID and sticker code, and
+starts a leak from the dashboard. Step by step: [`docs/founder-test.md`](docs/founder-test.md).
 
 ## Develop
 
@@ -42,7 +37,7 @@ Requires Node 20+.
 ```bash
 npm install
 npm run dev          # http://localhost:5173
-npm test             # simulator unit tests
+npm test             # unit tests (device model, update policy, settings)
 npm run typecheck
 npm run build        # web build in dist/
 ```
@@ -60,8 +55,7 @@ npm run android:open # open in Android Studio, then Run
 src/
   main.tsx, App.tsx     entry point, app shell, tab bar, theme
   lib/sim.ts            device behaviour (pure functions, unit-tested in sim.test.ts)
-  lib/demo.ts           demo sites and devices
-  lib/store.ts          app state, the 1-second simulation tick, alarm handling
+  lib/store.ts          app state (from live.ts), alarm handling
   lib/platform.ts       notifications, vibration, alarm sound, status bar (native or web)
   lib/i18n.ts           all text, Bangla and English
   lib/router.ts         hash routes (#/device/<id> …)
@@ -96,10 +90,10 @@ vector master when it exists, keeping the names. Only the logo follows that guid
 navy with no icon (`android/app/src/main/res/values/splash.xml`, `values/styles.xml`), so the two read as one.
 
 The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` in `src/lib/platform.ts`):
-- **Real accounts only: no demo and no made-up devices.** It opens straight to sign-in (email and
-  password; phone test numbers), and shows only the devices on that account (`load()` in `store.ts`).
-  The web app keeps its demo for website visitors. For testing, the founders use the **Emulators** in
-  the team dashboard: test devices that behave like real ones (website repo, `team-dashboard/README.md`).
+- **Real accounts only, like the web app: no demo and no made-up devices.** After the splash it opens
+  straight to sign-in (email and password; phone test numbers), and shows only the devices on that
+  account. For testing, the founders use the **Emulators** in the team dashboard: test devices that
+  behave like real ones (website repo, `team-dashboard/README.md`).
 - Top bar: VenGuard symbol (left), the name (middle), profile button (right, opens Account).
 - Bottom bar in VenGuard Orange with navy icons: Home, History, About us. Family moved into Account.
 - Home: one panel per device with its place and one reading (its status); the border is the status
@@ -118,7 +112,7 @@ The Android app also has its own layout (`src/phone/`, switched on by `phoneUI` 
   colours and shows "Gas is mitigated", also as a phone notification (`clearAlarm` in
   `store.ts`). The web app keeps its full-screen alarm.
 - History: a timeline of every device's events; each card names the place and device
-  (`src/lib/place.ts` writes "Home · Kitchen" for demo places and just "Home" for a real device).
+  (`src/lib/place.ts` writes "Home · Kitchen", or just "Home" when the device is named like its place).
 - About us: what VenGuard does, vision, recognition (BUET BRTC testing says "in progress" until the
   report is in), contact, and a link to the OASIS website.
 - See it in a browser while developing: `npm run dev`, then open `http://localhost:5173/?phone`
@@ -148,10 +142,11 @@ Team dashboard notice (English only, shown in both app languages) and minimum ve
 
 Founders' test plan: [`docs/founder-test.md`](docs/founder-test.md).
 
-## Live mode (real devices)
+## Sign-in and real devices
 
-The welcome screen offers **Sign in to my VenGuard** next to the demo. Live mode uses the Firebase
-project `venguard-connected` on the free Spark plan (`src/lib/firebase.ts`, loaded only on sign-in):
+The web app opens on its welcome screen (logo, tagline, language) with one button, **Sign in to my
+VenGuard** (`src/screens/Welcome.tsx`); the Android app opens on its splash and then sign-in. Device
+data comes only from the Firebase project `venguard-connected` on the free Spark plan (`src/lib/firebase.ts`, loaded only on sign-in):
 
 - Sign-in (`src/screens/SignIn.tsx`; enable each method in Firebase console → Authentication →
   Sign-in method):
@@ -173,27 +168,27 @@ project `venguard-connected` on the free Spark plan (`src/lib/firebase.ts`, load
 Backend, security rules and the device side: `backend/connected-firebase` in the website repository
 (`database.rules.json`, `DEVICE_API.md` → "Free plan (Spark) edition", `tools/provision-spark.mjs`).
 
-`src/lib/live.ts` maps the database into the same `Device`/`AppEvent` shapes the demo uses, so every
-screen works in both modes. End-to-end check (customer in a browser + simulated device through the
+`src/lib/live.ts` maps the database into the `Device`/`AppEvent` shapes of `src/lib/sim.ts` (the same
+ones the device simulator uses). End-to-end check (customer in a browser + simulated device through the
 rules): run the Auth and Database emulators, load the rules, then `VITE_FIREBASE_EMULATORS=1 npm run dev`.
 
 **Link from the website:** `https://oasisnextbd.github.io/venguard-app/#/welcome` (or `#/welcome/bn`,
-`#/welcome/en`) always opens the welcome screen with both choices, the demo and sign-in, even in a
-browser that was left in the demo. Someone already signed in goes straight to their devices
-(`src/main.tsx`).
+`#/welcome/en`) sets the language and opens the welcome screen. Someone who has been there before goes
+straight on: to their devices when signed in, else to sign-in (`src/main.tsx`). Browsers that used the
+old demo see the welcome screen again (`load()` in `store.ts`).
 
-## Device simulator (demos and firmware work)
+## Device simulator (firmware work)
 
 `simulator.html` (published at https://oasisnextbd.github.io/venguard-app/simulator.html) signs in as
 one device and behaves like it, through the same database paths and rules as real firmware: it
 reports state and heartbeat, posts events, and obeys `close` commands (acts, acks once, clears the
-command). It reuses `src/lib/sim.ts`, so it behaves exactly like the in-app demo. Buttons: start a
+command). It reuses `src/lib/sim.ts`, like the team dashboard's emulators. Buttons: start a
 leak, turn the regulator off, lift the reset lever, low battery, test button, go offline.
-Register a demo device first (see the website repo: `tools/provision-spark.mjs` and the setup guide).
+Register a test device first (see the website repo: `tools/provision-spark.mjs` and the setup guide).
 
 ## Android release signing (for Google Play)
 
-CI signs with a shared debug key by default (fine for demos; updates install over each
+CI signs with a shared debug key by default (fine for testing; updates install over each
 other). For Play Store releases, create a keystore once and add these repository secrets:
 `ANDROID_KEYSTORE_BASE64` (the .jks file, base64), `ANDROID_KEYSTORE_PASSWORD`,
 `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. CI then builds a signed release APK.

@@ -40,7 +40,7 @@ function tabOf(r: Route): Tab | null {
 }
 
 export function PhoneShell({ route }: { route: Route }) {
-  const { auth, mode, events, devices, alarmFor, mitigated, theme } = useApp();
+  const { auth, events, devices, alarmFor, mitigated, theme } = useApp();
   const { t } = useT();
   const current = tabOf(route);
   const leak = alarmFor && devices[alarmFor]?.alarm ? alarmFor : null;
@@ -49,7 +49,7 @@ export function PhoneShell({ route }: { route: Route }) {
   useEffect(() => { if (leak) go({ name: "device", id: leak }); }, [leak]);
   useEffect(() => { void (leak ? setStatusBarAlarm() : setStatusBar(isDark(theme))); }, [leak, theme]);
   const hot = Object.values(devices).some((d) => statusOf(d) === "danger");
-  const initial = mode === "live" && auth ? auth.who.replace(/^\+88/, "").charAt(0).toUpperCase() : "";
+  const initial = auth ? auth.who.replace(/^\+88/, "").charAt(0).toUpperCase() : "";
 
   return (
     <div className={leak ? "pshell pshell--alarm" : "pshell"}>

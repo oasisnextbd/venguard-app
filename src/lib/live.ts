@@ -1,6 +1,6 @@
 /**
  * Live data from the VenGuard Firebase backend (free Spark plan).
- * Loaded on demand (dynamic import) so the demo never downloads Firebase.
+ * Loaded on demand (dynamic import): the welcome screen opens without downloading Firebase.
  *
  * Database layout and the device side: OASIS_official_website/backend/connected-firebase
  * (DEVICE_API.md, "Free plan (Spark) edition"). The security rules there decide what the

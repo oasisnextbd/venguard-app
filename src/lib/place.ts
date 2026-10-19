@@ -1,6 +1,6 @@
 /**
- * How a device's place is written. Demo places have a place and a room ("Home" · "Kitchen");
- * a real device has one name and an area, so the name is not repeated ("Home", "Mirpur 11").
+ * How a device's place is written: "Home · Kitchen" when the place and the device have different names;
+ * when they share one name it is not repeated ("Home", with the area "Mirpur 11" underneath).
  */
 import type { Lang } from "./i18n";
 import type { Device, Site } from "./sim";

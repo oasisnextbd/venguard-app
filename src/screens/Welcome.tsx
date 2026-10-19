@@ -3,6 +3,7 @@ import { CornerSettings } from "../components/QuickSettings";
 import { actions } from "../lib/store";
 import { useT } from "../lib/useT";
 
+/** Web app opening screen: logo, tagline, language, then "Sign in to my VenGuard". */
 export function Welcome() {
   const { t, lang } = useT();
   return (
@@ -16,9 +17,7 @@ export function Welcome() {
           <button type="button" lang="bn" aria-pressed={lang === "bn"} onClick={() => actions.setLang("bn")}>বাংলা</button>
           <button type="button" lang="en" aria-pressed={lang === "en"} onClick={() => actions.setLang("en")}>English</button>
         </div>
-        <button type="button" className="btn btn--primary btn--block" onClick={actions.start}>{t("startDemo")}</button>
-        <button type="button" className="btn btn--secondary btn--block" onClick={actions.startLive}>{t("signInReal")}</button>
-        <p className="small muted">{t("demoNote")}</p>
+        <button type="button" className="btn btn--primary btn--block" onClick={actions.startLive}>{t("signInReal")}</button>
       </div>
     </main>
   );

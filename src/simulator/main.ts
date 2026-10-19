@@ -2,7 +2,7 @@
  * Device simulator: plays one VenGuard device against the live Firebase project, through the
  * same database paths and rules as real firmware (DEVICE_API.md → "Free plan (Spark) edition"
  * in OASIS_official_website/backend/connected-firebase). Uses the app's own device model
- * (src/lib/sim.ts), so it behaves exactly like the demo: 20 % LEL for 7 s confirms a leak,
+ * (src/lib/sim.ts), so it behaves like the team dashboard's emulators: 20 % LEL for 7 s confirms a leak,
  * the valve closes, the relay runs the fan until the air is clear, reset is by hand only.
  */
 import "../styles.css";
@@ -32,7 +32,7 @@ if (import.meta.env.VITE_FIREBASE_EMULATORS) {
   connectDatabaseEmulator(db, "127.0.0.1", 9000);
 }
 const KEY = "vg_sim_v1";
-// Events the database rules accept from a device (regulator_off is an app-demo-only event).
+// Events the database rules accept from a device (not regulator_off: a person does that by hand, the device cannot see it).
 const REPORTED: EventType[] = ["leak_confirmed", "valve_closed", "fan_on", "fan_off", "air_clear", "reset", "remote_close", "test", "battery_low"];
 
 let id = "";
