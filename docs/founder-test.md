@@ -79,8 +79,8 @@ VG-TEST03 is a detector + relay kit (no valve): repeat 3.2 and check it tells yo
 
 ## 5. Known limits during the free test
 
-- **No alarm while the app is closed.** The phone alarms while the app is open or recently used. The
-  detector's own buzzer is the main alarm. Background alarms are the next step (free relay).
+- **No phone alarm while the app is closed.** The phone alarms while the app is open or recently used;
+  the detector's own buzzer still sounds. Background alarms on the phone are the next step (free relay).
 - **No SMS to family** (paid everywhere in Bangladesh). Family members can install the app and add the
   same device instead.
 - **Google sign-in** works in the web app only for now; on Android use email.
