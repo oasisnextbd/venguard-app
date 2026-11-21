@@ -2,7 +2,7 @@
  * Live data from the VenGuard Firebase backend (free Spark plan).
  * Loaded on demand (dynamic import): the welcome screen opens without downloading Firebase.
  *
- * Database layout and the device side: OASIS_official_website/backend/connected-firebase
+ * Database layout and the device side: oasisnextbd/venguard-website, backend/connected-firebase
  * (DEVICE_API.md, "Free plan (Spark) edition"). The security rules there decide what the
  * app may do: read its own devices, claim one with its sticker code, and send "close".
  * There is deliberately no way to send "open".

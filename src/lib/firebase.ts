@@ -1,6 +1,6 @@
 /**
  * Firebase project for live devices (free Spark plan; data protection is in the database
- * security rules: OASIS_official_website/backend/connected-firebase/database.rules.json).
+ * security rules: oasisnextbd/venguard-website, backend/connected-firebase/database.rules.json).
  * These values identify the app; they are not secrets.
  * The SDK is loaded only from "Sign in to my VenGuard" on, so the welcome screen stays small and fast.
  */

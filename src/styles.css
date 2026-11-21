@@ -1,7 +1,7 @@
 /* =========================================================================
    VenGuard app — styles
    Same brand tokens and Day/Night model as the website
-   (OASIS_official_website/venguard/assets/css/venguard.css). Components use
+   (venguard/assets/css/venguard.css in oasisnextbd/venguard-website). Components use
    semantic tokens only; themes redefine the tokens.
    Contents: 1 fonts · 2 tokens · 3 base · 4 shell · 5 buttons · 6 status
              7 cards · 8 device · 9 lists/forms · 10 alarm · 11 welcome · 12 live mode · 13 simulator

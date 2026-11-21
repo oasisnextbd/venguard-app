@@ -1,7 +1,7 @@
 /**
  * Device simulator: plays one VenGuard device against the live Firebase project, through the
  * same database paths and rules as real firmware (DEVICE_API.md → "Free plan (Spark) edition"
- * in OASIS_official_website/backend/connected-firebase). Uses the app's own device model
+ * in oasisnextbd/venguard-website, backend/connected-firebase). Uses the app's own device model
  * (src/lib/sim.ts), so it behaves like the team dashboard's emulators: 20 % LEL for 7 s confirms a leak,
  * the valve closes, the relay runs the fan until the air is clear, reset is by hand only.
  */

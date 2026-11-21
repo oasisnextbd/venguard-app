@@ -13,7 +13,7 @@ in the team dashboard. There is no demo mode (see "Showing VenGuard").
 |---|---|
 | Web app | https://oasisnextbd.github.io/venguard-app/ |
 | Android app (APK) | https://oasisnextbd.github.io/venguard-app/VenGuard.apk |
-| Website | https://oasisnextbd.github.io/OASIS_official_website/VENGuard/ |
+| Website | https://www.venguard.tech/ (repository oasisnextbd/venguard-website) |
 
 ## Install on an Android phone
 
@@ -73,7 +73,7 @@ android/                Capacitor Android project (committed; build output is ig
 
 ## Brand rules
 
-Same as the website (`docs/venguard/brand-rules.md` in OASIS_official_website):
+Same as the website (`docs/venguard/brand-rules.md` in oasisnextbd/venguard-website):
 VenGuard Orange `#E85D0C`, Deep Orange `#B8460A`, Guard Navy `#0B2A4A`, Sand `#FBF1EA`.
 
 Logo: follow the Logo Guidelines v1.0 (`docs/venguard/VenGuard_Logo_Guidelines.docx` in the website
