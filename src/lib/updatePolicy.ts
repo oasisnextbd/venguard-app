@@ -12,8 +12,10 @@ export interface UpdateManifest {
   minNative: string; // oldest Android shell (APK versionName) this bundle runs on
 }
 
-/** Updates come only from here; anything else in a manifest is ignored. */
-export const UPDATE_ORIGIN = "https://oasisnextbd.github.io/venguard-app/";
+/** Updates (and the APK) come only from here; anything else in a manifest is ignored.
+ *  Until November 2026 this was https://oasisnextbd.github.io/venguard-app/; CI keeps publishing there,
+ *  with a latest.json pointing at that address, so phones on older bundles still update (to this one). */
+export const UPDATE_ORIGIN = "https://app.venguard.tech/";
 
 /** Compares dotted versions ("0.10.0" > "0.9.2"); missing parts count as 0, anything after "-" or "+" is ignored. */
 export function compareVersions(a: string, b: string): number {

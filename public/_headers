@@ -1,0 +1,5 @@
+# Cloudflare Pages (app.venguard.tech) response headers. GitHub Pages ignores this file.
+# The team dashboard (www.venguard.tech/team/) reads updates/latest.json to show the newest app version.
+/updates/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: no-cache

@@ -1,6 +1,7 @@
 # Builds, tests and publishes the VenGuard app.
 #   Pull requests: typecheck, unit tests, web build, Android debug build.
-#   main:          the same, then publishes https://oasisnextbd.github.io/venguard-app/
+#   main:          the same, then publishes https://app.venguard.tech/ (Cloudflare Pages) and, until
+#                  every installed app has moved there, https://oasisnextbd.github.io/venguard-app/
 #                  with the Android app at …/VenGuard.apk and the in-app update at …/updates/
 #                  (latest.json + bundle zip; installed apps fetch it, see src/lib/updates.ts)
 #   Tags v*:       also attaches the APK to a GitHub Release.
@@ -99,8 +100,9 @@ jobs:
 
       # The same files also go to Cloudflare Pages (project "venguard-app", address app.venguard.tech),
       # using the repository secrets CLOUDFLARE_API_TOKEN (Cloudflare Pages: Edit) and CLOUDFLARE_ACCOUNT_ID.
-      # Skipped when the secrets are missing. GitHub Pages stays on until every installed app fetches
-      # its updates from app.venguard.tech (see UPDATE_ORIGIN in src/lib/updatePolicy.ts).
+      # Skipped when the secrets are missing. latest.json there points at app.venguard.tech; the GitHub
+      # Pages copy keeps the old address, because older bundles only accept updates from where they live
+      # (UPDATE_ORIGIN in src/lib/updatePolicy.ts). GitHub Pages can stop once no phone runs such a bundle.
       - name: Publish to Cloudflare Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
@@ -110,7 +112,13 @@ jobs:
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "No Cloudflare secrets: skipped"; exit 0; fi
           npx --yes wrangler@4 pages project create venguard-app --production-branch main \
             || echo "Project venguard-app already exists"
+          cp dist/updates/latest.json "$RUNNER_TEMP/latest-github.json"
+          node -e '
+            const f = "dist/updates/latest.json", fs = require("fs"), m = JSON.parse(fs.readFileSync(f, "utf8"));
+            m.url = m.url.replace("https://oasisnextbd.github.io/venguard-app/", "https://app.venguard.tech/");
+            fs.writeFileSync(f, JSON.stringify(m, null, 2));'
           npx --yes wrangler@4 pages deploy dist --project-name venguard-app --branch main --commit-dirty=true
+          cp "$RUNNER_TEMP/latest-github.json" dist/updates/latest.json
 
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'

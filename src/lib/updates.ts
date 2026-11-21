@@ -1,7 +1,7 @@
 /**
  * In-app updates for the Android app: new screens arrive without reinstalling the APK.
  * On start the app confirms the running bundle works (otherwise the updater rolls back to the last good
- * one), then reads updates/latest.json from our own GitHub Pages; a newer bundle is downloaded in the
+ * one), then reads updates/latest.json from our own site (app.venguard.tech); a newer bundle is downloaded in the
  * background, checked against its checksum (CRC32 in updater 6.x; the download itself is HTTPS from our
  * own site), and used from the next time the app opens. If a new bundle fails to start, the updater
  * goes back to the previous one by itself (notifyAppReady not called within 10 s).

@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 import pkg from "./package.json";
 
 // base "./" keeps every asset path relative, so the same build works on
-// GitHub Pages (/venguard-app/) and inside the Android app (Capacitor).
+// app.venguard.tech, GitHub Pages (/venguard-app/) and inside the Android app (Capacitor).
 export default defineConfig({
   base: "./",
   plugins: [react()],

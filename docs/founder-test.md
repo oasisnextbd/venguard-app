@@ -21,7 +21,7 @@ and the app version from **Profile** (bottom of the page, for example `0.3.0 (65
 
 ## 1. Install once
 
-1. On the phone, open <https://oasisnextbd.github.io/venguard-app/VenGuard.apk> and install it.
+1. On the phone, open <https://app.venguard.tech/VenGuard.apk> and install it.
    - Samsung: Settings → Security and privacy → **Auto Blocker** off while installing, then on again.
    - If Play Protect warns: **More details → Install anyway**.
 2. Open the app: the opening screen, then **Sign in**. Tap **Create an account** and use your email.

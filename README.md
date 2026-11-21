@@ -11,8 +11,8 @@ in the team dashboard. There is no demo mode (see "Showing VenGuard").
 
 | | |
 |---|---|
-| Web app | https://oasisnextbd.github.io/venguard-app/ |
-| Android app (APK) | https://oasisnextbd.github.io/venguard-app/VenGuard.apk |
+| Web app | https://app.venguard.tech/ |
+| Android app (APK) | https://app.venguard.tech/VenGuard.apk |
 | Website | https://www.venguard.tech/ (repository oasisnextbd/venguard-website) |
 
 ## Install on an Android phone
@@ -68,7 +68,7 @@ public/devices/         pictures of the detector, valve and relay (the founders'
   styles.css            brand tokens, Day/Night themes, all styles
 public/                 icons, fonts (SIL OFL), web app manifest, service worker
 android/                Capacitor Android project (committed; build output is ignored)
-.github/workflows/      CI: test, build, Android APK, publish to GitHub Pages
+.github/workflows/      CI: test, build, Android APK, publish to app.venguard.tech (and GitHub Pages)
 ```
 
 ## Brand rules
@@ -125,7 +125,8 @@ icon and a word, not colour alone. No placeholder prices or contact details.
 
 Installed apps update their screens by themselves; nobody reinstalls the APK for a design or text change.
 - CI zips each web build into `updates/bundle-<build>.zip` and writes `updates/latest.json` (version,
-  build, CRC32 checksum, `minNative`) on GitHub Pages next to `VenGuard.apk`.
+  build, CRC32 checksum, `minNative`) on app.venguard.tech next to `VenGuard.apk`. The GitHub Pages copy
+  (the address used before November 2026) gets a `latest.json` pointing at itself, so older phones still update.
 - The app (`src/lib/updates.ts`, plugin `@capgo/capacitor-updater` 6.14.7, MPL-2.0) confirms on start that
   its screens work (if not, the plugin rolls back), reads `latest.json`, downloads a newer bundle in the
   background and uses it from the next start. Rules in `src/lib/updatePolicy.ts` (tested): newer build,
@@ -173,14 +174,14 @@ Backend, security rules and the device side: `backend/connected-firebase` in the
 ones the device simulator uses). End-to-end check (customer in a browser + simulated device through the
 rules): run the Auth and Database emulators, load the rules, then `VITE_FIREBASE_EMULATORS=1 npm run dev`.
 
-**Link from the website:** `https://oasisnextbd.github.io/venguard-app/#/welcome` (or `#/welcome/bn`,
+**Link from the website:** `https://app.venguard.tech/#/welcome` (or `#/welcome/bn`,
 `#/welcome/en`) sets the language and opens the welcome screen. Someone who has been there before goes
 straight on: to their devices when signed in, else to sign-in (`src/main.tsx`). Browsers that used the
 old demo see the welcome screen again (`load()` in `store.ts`).
 
 ## Device simulator (firmware work)
 
-`simulator.html` (published at https://oasisnextbd.github.io/venguard-app/simulator.html) signs in as
+`simulator.html` (published at https://app.venguard.tech/simulator.html) signs in as
 one device and behaves like it, through the same database paths and rules as real firmware: it
 reports state and heartbeat, posts events, and obeys `close` commands (acts, acks once, clears the
 command). It reuses `src/lib/sim.ts`, like the team dashboard's emulators. Buttons: start a
